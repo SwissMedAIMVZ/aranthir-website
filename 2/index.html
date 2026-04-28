@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aranthir — Die Akte, die sich selbst führt.</title>
+  <meta name="description" content="Klinische Dokumentation für die zahnärztliche Heimversorgung. Entwickelt in der Schweiz von SwissMedAI.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%23061F6E'/%3E%3Ctext x='256' y='338' text-anchor='middle' font-family='Instrument Serif,serif' font-size='300' fill='%23F4EFE6'%3EA%3C/text%3E%3Ccircle cx='256' cy='435' r='12' fill='%232D7A7A'/%3E%3C/svg%3E">
+
+  <style>
+    /* ============= Tokens ============= */
+    :root {
+      --abyss: #061F6E;          /* Primary surface */
+      --abyss-2: #0A2778;         /* Slightly lighter navy for surfaces */
+      --ink: #0A2E9E;
+      --bone: #F4EFE6;
+      --bone-dim: rgba(244,239,230,0.78);
+      --bone-fade: rgba(244,239,230,0.55);
+      --bone-trace: rgba(244,239,230,0.32);
+      --hairline: rgba(244,239,230,0.14);
+      --hairline-strong: rgba(244,239,230,0.28);
+      --accent: #2D7A7A;          /* Slate-teal */
+      --accent-2: #4A9696;
+      --amber: #D97706;
+      --ember: #B54A2B;
+    }
+
+    /* ============= Reset ============= */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--abyss);
+      color: var(--bone);
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-weight: 400;
+    }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+    button { background: none; border: none; color: inherit; cursor: pointer; padding: 0; font: inherit; }
+    em { font-style: italic; }
+
+    /* ============= Layout ============= */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    @media (max-width: 760px) { .container { padding: 0 22px; } }
+
+    /* ============= Background grain ============= */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(244,239,230,0.018) 1px, transparent 1px);
+      background-size: 3px 3px;
+      z-index: 1;
+    }
+
+    /* ============= Masthead ============= */
+    .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(6, 31, 110, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 0.5px solid var(--hairline);
+    }
+    .masthead-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon { width: 30px; height: 30px; flex-shrink: 0; }
+    .brand-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+      color: var(--bone);
+      line-height: 1;
+      padding-top: 2px;
+    }
+    nav.primary {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    nav.primary a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bone-fade);
+      transition: color 0.2s;
+    }
+    nav.primary a:hover { color: var(--bone); }
+    .signin {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      border-bottom: 0.5px solid var(--accent-2);
+      padding-bottom: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .signin::after {
+      content: " →";
+    }
+    .signin:hover { color: var(--bone); border-color: var(--bone); }
+    .lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--bone-trace);
+    }
+    .lang .on { color: var(--bone); }
+    .lang .sep { margin: 0 6px; color: var(--hairline-strong); }
+    @media (max-width: 1000px) {
+      nav.primary .nav-link { display: none; }
+    }
+
+    /* ============= Hero ============= */
+    .hero {
+      padding: 180px 0 140px;
+      position: relative;
+      border-bottom: 0.5px solid var(--hairline);
+    }
+    .hero-stamp {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 56px;
+    }
+    .hero-stamp::before {
+      content: "§ ";
+      color: var(--bone-trace);
+      margin-right: 4px;
+    }
+    .hero-wordmark {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: clamp(96px, 16vw, 240px);
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      color: var(--bone);
+      margin: 0 0 56px;
+    }
+    .hero-rule-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .hero-rule {
+      width: 80px;
+      height: 0.5px;
+      background: var(--accent);
+    }
+    .hero-rule-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+    .hero-tagline {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.15;
+      color: var(--bone);
+      margin: 0 0 8px;
+      letter-spacing: -0.005em;
+      max-width: 18ch;
+    }
+    .hero-tagline-en {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bone-fade);
+      margin: 0 0 56px;
+    }
+    .hero-lede {
+      max-width: 56ch;
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--bone-dim);
+      margin: 0 0 64px;
+      font-weight: 300;
+    }
+    .hero-cta-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 28px;
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      border: 0.5px solid transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--bone);
+      color: var(--abyss);
+    }
+    .btn-primary:hover { background: var(--accent-2); color: var(--bone); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--bone);
+      border-color: var(--hairline-strong);
+    }
+    .btn-ghost:hover { border-color: var(--bone); background: rgba(244,239,230,0.04); }
+
+    /* Marginalia note in hero */
+    .hero-margin {
+      position: absolute;
+      right: 40px;
+      top: 200px;
+      max-width: 220px;
+      padding: 16px 20px;
+      border-left: 0.5px solid var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      line-height: 1.6;
+      color: var(--bone-fade);
+      letter-spacing: 0.02em;
+    }
+    .hero-margin .label {
+      display: block;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 9.5px;
+      color: var(--accent-2);
+      margin-bottom: 8px;
+    }
+    @media (max-width: 1100px) { .hero-margin { display: none; } }
+
+    /* ============= Section frame ============= */
+    section.chapter {
+      padding: 140px 0;
+      border-bottom: 0.5px solid var(--hairline);
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-header {
+      display: flex;
+      gap: 48px;
+      align-items: baseline;
+      margin-bottom: 64px;
+      padding-bottom: 24px;
+      border-bottom: 0.5px solid var(--hairline);
+    }
+    .chapter-mark {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--accent-2);
+      flex-shrink: 0;
+      width: 80px;
+    }
+    .chapter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      flex-shrink: 0;
+    }
+    .chapter-title {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: clamp(36px, 5.2vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: var(--bone);
+      margin: 0;
+      flex: 1;
+      max-width: 18ch;
+    }
+    .chapter-lede {
+      max-width: 64ch;
+      font-size: 19px;
+      line-height: 1.65;
+      color: var(--bone-dim);
+      margin: 0 0 80px;
+      font-weight: 300;
+    }
+    @media (max-width: 760px) {
+      .chapter-header { flex-direction: column; gap: 12px; }
+      .chapter-mark, .chapter-label { width: auto; }
+    }
+
+    /* ============= Methodologie (3 steps) ============= */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      margin-top: 32px;
+    }
+    @media (max-width: 880px) {
+      .method-grid { grid-template-columns: 1fr; gap: 56px; }
+    }
+    .method-step {
+      padding-top: 28px;
+      border-top: 0.5px solid var(--bone);
+    }
+    .method-num {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 56px;
+      line-height: 1;
+      color: var(--accent-2);
+      margin-bottom: 24px;
+    }
+    .method-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .method-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      color: var(--bone);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      margin: 0 0 16px;
+    }
+    .method-body {
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--bone-dim);
+      font-weight: 300;
+    }
+    .method-detail {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 0.5px solid var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.65;
+      color: var(--bone-fade);
+      letter-spacing: 0.02em;
+    }
+
+    /* ============= Werkstatt (feature catalog) ============= */
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border-top: 0.5px solid var(--hairline);
+    }
+    @media (max-width: 760px) { .catalog { grid-template-columns: 1fr; } }
+    .catalog-item {
+      padding: 48px 40px 48px 0;
+      border-bottom: 0.5px solid var(--hairline);
+      position: relative;
+    }
+    .catalog-item:nth-child(odd) {
+      border-right: 0.5px solid var(--hairline);
+      padding-right: 48px;
+    }
+    .catalog-item:nth-child(even) {
+      padding-left: 48px;
+    }
+    @media (max-width: 760px) {
+      .catalog-item:nth-child(odd) { border-right: 0; padding-right: 0; }
+      .catalog-item:nth-child(even) { padding-left: 0; }
+    }
+    .catalog-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 14px;
+    }
+    .catalog-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 32px;
+      letter-spacing: -0.02em;
+      color: var(--bone);
+      line-height: 1.1;
+      margin: 0 0 16px;
+    }
+    .catalog-italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--accent-2);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .catalog-body {
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: var(--bone-dim);
+      font-weight: 300;
+      max-width: 50ch;
+    }
+    .catalog-detail-row {
+      margin-top: 24px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .catalog-detail {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bone-fade);
+      padding: 5px 10px;
+      border: 0.5px solid var(--hairline-strong);
+      border-radius: 1px;
+    }
+
+    /* ============= Kompendium (compliance) ============= */
+    .kompendium {
+      border-top: 0.5px solid var(--bone);
+    }
+    .kompendium-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr;
+      gap: 40px;
+      padding: 36px 0;
+      border-bottom: 0.5px solid var(--hairline);
+      align-items: baseline;
+    }
+    @media (max-width: 880px) {
+      .kompendium-row { grid-template-columns: 1fr; gap: 16px; }
+    }
+    .kompendium-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      font-weight: 500;
+    }
+    .kompendium-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px;
+      color: var(--bone);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    .kompendium-detail {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--bone-dim);
+      font-weight: 300;
+    }
+
+    /* ============= Träger (about/founder) ============= */
+    .traeger {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .traeger { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .traeger-prose {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--bone);
+      letter-spacing: -0.005em;
+      max-width: 32ch;
+    }
+    .traeger-prose strong {
+      font-style: italic;
+      color: var(--accent-2);
+      font-weight: 400;
+    }
+    .traeger-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .traeger-card {
+      padding: 24px 0;
+      border-top: 0.5px solid var(--bone);
+    }
+    .traeger-card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 12px;
+    }
+    .traeger-card-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      color: var(--bone);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .traeger-card-body {
+      font-size: 14.5px;
+      color: var(--bone-dim);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ============= Eintreten (final CTA) ============= */
+    .eintreten {
+      padding: 180px 0;
+      text-align: center;
+      border-bottom: 0.5px solid var(--hairline);
+      position: relative;
+      overflow: hidden;
+    }
+    .eintreten::before {
+      content: "A";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Instrument Serif', serif;
+      font-size: 720px;
+      color: var(--abyss-2);
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+    }
+    .eintreten > .container { position: relative; z-index: 1; }
+    .eintreten-stamp {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 32px;
+    }
+    .eintreten-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(48px, 7vw, 96px);
+      letter-spacing: -0.025em;
+      color: var(--bone);
+      line-height: 1.05;
+      margin: 0 0 32px;
+    }
+    .eintreten-italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: clamp(20px, 2.5vw, 26px);
+      color: var(--bone-dim);
+      margin: 0 auto 56px;
+      max-width: 40ch;
+    }
+    .eintreten-cta-row {
+      display: inline-flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ============= Footer ============= */
+    footer {
+      padding: 64px 0 80px;
+      background: var(--abyss);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 64px;
+      border-bottom: 0.5px solid var(--hairline);
+      margin-bottom: 32px;
+    }
+    @media (max-width: 880px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .footer-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-brand .brand-name { font-size: 22px; }
+    .footer-tag {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      color: var(--bone-dim);
+      font-size: 16px;
+    }
+    .footer-col h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin: 0 0 18px;
+      font-weight: 500;
+    }
+    .footer-col ul { list-style: none; padding: 0; margin: 0; }
+    .footer-col li { margin-bottom: 12px; }
+    .footer-col a {
+      font-size: 14px;
+      color: var(--bone-dim);
+      transition: color 0.15s;
+    }
+    .footer-col a:hover { color: var(--bone); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-signature {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--bone-fade);
+    }
+
+    /* ============= Brand-icon SVG fills ============= */
+    .brand-icon rect { fill: var(--accent-2); }
+    .brand-icon-inverse rect { fill: var(--bone); }
+    .brand-icon-inverse text { fill: var(--abyss); }
+    .brand-icon-inverse circle { fill: var(--accent); }
+
+    /* ============= Reveal on scroll ============= */
+    .reveal { opacity: 0; transform: translateY(8px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== Masthead ===================== -->
+  <header class="masthead">
+    <div class="container masthead-inner">
+      <a href="#" class="brand" aria-label="Aranthir">
+        <svg class="brand-icon brand-icon-inverse" viewBox="0 0 512 512" aria-hidden="true">
+          <rect width="512" height="512" rx="96"/>
+          <text x="256" y="338" text-anchor="middle" font-family="Instrument Serif, serif" font-size="300">A</text>
+          <circle cx="256" cy="435" r="12"/>
+        </svg>
+        <span class="brand-name">Aranthir</span>
+      </a>
+      <nav class="primary">
+        <a href="#methodologie" class="nav-link">Methodologie</a>
+        <a href="#werkstatt" class="nav-link">Werkstatt</a>
+        <a href="#kompendium" class="nav-link">Kompendium</a>
+        <a href="#traeger" class="nav-link">Träger</a>
+        <a href="https://app.aranthir.com" class="signin">Anmelden</a>
+        <span class="lang"><span class="on">DE</span><span class="sep">·</span><span>EN</span></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== Hero ===================== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-stamp">Aranthir · von SwissMedAI · Edition 2026</div>
+      <h1 class="hero-wordmark">Aranthir</h1>
+      <div class="hero-rule-row">
+        <span class="hero-rule"></span>
+        <span class="hero-rule-label">Klinische Dokumentation</span>
+      </div>
+      <p class="hero-tagline">Die Akte, die sich selbst führt.</p>
+      <p class="hero-tagline-en">The record that writes itself</p>
+      <p class="hero-lede">Aranthir hört die Behandlung mit, strukturiert das Diktat in den passenden Vordruck, zeigt es zum Gegenlesen und siegelt den Eintrag. Was danach in der Akte steht, ist abrechnungsfähig — und auditierbar.</p>
+      <div class="hero-cta-row">
+        <a href="#eintreten" class="btn btn-primary">Demo anfragen →</a>
+        <a href="https://app.aranthir.com" class="btn btn-ghost">Bestehender Nutzer · Anmelden</a>
+      </div>
+    </div>
+
+    <aside class="hero-margin">
+      <span class="label">Erscheinungsort</span>
+      Berlin · Zürich<br>
+      Pilotbetrieb mit zahn­ärztlichen Heim­versorgern, Frühjahr 2026.<br>
+      Schweizer Datenresidenz, deutsche Vorschrift.
+    </aside>
+  </section>
+
+  <!-- ===================== § I · Methodologie ===================== -->
+  <section id="methodologie" class="chapter">
+    <div class="container">
+      <div class="chapter-header">
+        <div class="chapter-mark">§ I</div>
+        <div class="chapter-label">Methodologie</div>
+        <h2 class="chapter-title">Die Behandlung wird mitgeschrieben — nicht nachgeschrieben.</h2>
+      </div>
+      <p class="chapter-lede">Drei Schritte, eine Akte. Die Methode ist nicht neu — Sie diktieren bereits. Aranthir entfernt nur den Schritt zwischen Diktat und Vordruck, an dem die Genauigkeit sonst verloren geht.</p>
+      <div class="method-grid">
+        <article class="method-step">
+          <div class="method-num">i</div>
+          <div class="method-name">Mithören</div>
+          <h3 class="method-title">Audio-Mitschrift während der Behandlung.</h3>
+          <p class="method-body">Die App hört das Behandlungsgespräch mit, in der gewohnten Sprache. Kein Anlegen, kein Tippen, kein Diktiergerät am Mikrofon. Funktioniert auf dem Etagengang, im Patientenzimmer, mit Handschuhen.</p>
+          <div class="method-detail">→ Whisper-Sprachmodell · Klinisches Vokabular · Funktioniert offline · Audio bleibt am Gerät bis zur Freigabe</div>
+        </article>
+        <article class="method-step">
+          <div class="method-num">ii</div>
+          <div class="method-name">Strukturieren</div>
+          <h3 class="method-title">KI-Strukturierung in den passenden Vordruck.</h3>
+          <p class="method-body">Diktat wird in den §174a-konformen Behandlungsbogen, in PA-Schritte, in HKP-Pläne, in ZE-Pipelines aufgeteilt. Jede Zeile am richtigen Ort, jeder Befund in der zugehörigen Kachel.</p>
+          <div class="method-detail">→ §174a · BEMA §22a · ZE · HKP · Anzeige · Vordruck 10 — alle deutschen Vordrucke vorinstalliert</div>
+        </article>
+        <article class="method-step">
+          <div class="method-num">iii</div>
+          <div class="method-name">Siegeln</div>
+          <h3 class="method-title">Audit-Log und digitale Signatur.</h3>
+          <p class="method-body">Behandler liest gegen, signiert, fertig. Eintrag wird gesiegelt — nachträgliche Änderungen bleiben dokumentiert. Eine Akte, die ihre eigene Geschichte trägt.</p>
+          <div class="method-detail">→ GoBD-konform · Tamper-evident · Zeitstempel · Rollen-Audit · Export als PDF an Krankenkasse</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== § II · Werkstatt ===================== -->
+  <section id="werkstatt" class="chapter">
+    <div class="container">
+      <div class="chapter-header">
+        <div class="chapter-mark">§ II</div>
+        <div class="chapter-label">Werkstatt</div>
+        <h2 class="chapter-title">Was die Akte enthält.</h2>
+      </div>
+      <p class="chapter-lede">Aranthir ist kein generisches Praxis-Tool. Jeder deutsche Vordruck der aufsuchenden Heim-Zahnmedizin ist im Werkzeugkasten — von der Sondierungstiefe bis zur Vollprothesen-Anprobe.</p>
+      <div class="catalog">
+        <article class="catalog-item">
+          <div class="catalog-tag">KI-Diktat</div>
+          <h3 class="catalog-title">Sprache zu Akte.</h3>
+          <p class="catalog-italic">Whisper-Transkription mit klinischem Vokabular.</p>
+          <p class="catalog-body">Die Behandlung wird auf Deutsch mitgeschrieben. KI-Modelle erkennen Befunde, Behandlungsschritte, Materialcodes. Roher Transkript bleibt am Gerät, bis Sie freigeben.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">Whisper</span>
+            <span class="catalog-detail">DE-Klinisch</span>
+            <span class="catalog-detail">Offline-fähig</span>
+          </div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">PA · § 22a</div>
+          <h3 class="catalog-title">8-Schritt-Workflow mit Compliance-Gates.</h3>
+          <p class="catalog-italic">Befund → Störfaktoren → Vordruck → ATG → MHU → AIT → BEVa → UPT.</p>
+          <p class="catalog-body">Jeder Schritt mit eigenem Gate. Sondierungstiefen müssen vollständig sein, bevor ATG freigegeben wird. Dokumentations­lücken sind technisch ausgeschlossen, nicht nur unerwünscht.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">8 Schritte</span>
+            <span class="catalog-detail">Sondierungs­tiefen</span>
+            <span class="catalog-detail">BEMA-konform</span>
+          </div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">§ 174a</div>
+          <h3 class="catalog-title">13-stufiger Vordruck-Wizard.</h3>
+          <p class="catalog-italic">Vom Diktat zur abrechnungsfähigen Akte in einem Schritt.</p>
+          <p class="catalog-body">Diagnose, Behandlungs­codes (OPS), BEMA-Position, Patientenein­willigung — die KI füllt aus dem Diktat vor, der Behandler liest gegen. Fehlende Felder sind sichtbar, nicht versteckt.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">13 Stufen</span>
+            <span class="catalog-detail">PDF-Export</span>
+            <span class="catalog-detail">Krankenkassen­konform</span>
+          </div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">ZE · Pipeline</div>
+          <h3 class="catalog-title">11 Zustände vom Befund zur Eingliederung.</h3>
+          <p class="catalog-italic">Anzeige · Vordruck 10 · HKP · Labor · Anprobe · Eingliederung.</p>
+          <p class="catalog-body">Jeder Prothesenfall durchläuft 11 dokumentierte Zustände. Vollprothesen erhalten zwei Phasen: Test-Anprobe mit Entscheidungs­gate, dann Finale. Lab-Kanban hängt synchron daran.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">11 Zustände</span>
+            <span class="catalog-detail">Lab-Kanban</span>
+            <span class="catalog-detail">2-Phasen Vollprothese</span>
+          </div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">Sondierungs­raster</div>
+          <h3 class="catalog-title">Tiefen pro Zahn, Mesial und Distal.</h3>
+          <p class="catalog-italic">Farb­codiert nach Schweregrad, BOP- und Mobilitäts­markierung.</p>
+          <p class="catalog-body">Das vollständige PA-Blatt, digital. 32 Zähne × 2 Messpunkte × Farbcode. Wer gemessen hat, mit welchem Wert, an welchem Tag — alles im Audit-Log.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">32 × 2</span>
+            <span class="catalog-detail">BOP</span>
+            <span class="catalog-detail">Mobilität</span>
+          </div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">Verwaltung</div>
+          <h3 class="catalog-title">Audit-Dashboard mit Ampel­logik.</h3>
+          <p class="catalog-italic">Sofort · Fristen · Administrativ · Klinisch.</p>
+          <p class="catalog-body">Verwaltung sieht alle Heime, alle Behandler, alle Fristen in einer Maske. Compliance-Verstöße sind rot. Geöffnete HKPs sind amber. Was abrechenbar ist, ist grün. Der Praxis-Manager liest Risiken auf einer Etage ab.</p>
+          <div class="catalog-detail-row">
+            <span class="catalog-detail">Heim-Übersicht</span>
+            <span class="catalog-detail">Compliance-Ampel</span>
+            <span class="catalog-detail">CSV-Export</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== § III · Kompendium (Compliance) ===================== -->
+  <section id="kompendium" class="chapter">
+    <div class="container">
+      <div class="chapter-header">
+        <div class="chapter-mark">§ III</div>
+        <div class="chapter-label">Kompendium</div>
+        <h2 class="chapter-title">Vorschrift ist nicht das Ende der Liste — sie ist die Liste.</h2>
+      </div>
+      <p class="chapter-lede">Aranthir ist <em>für</em> regulierte Heim-Zahnmedizin gebaut, nicht <em>an</em> regulierte Heim-Zahnmedizin angepasst. Sechs Vorschriften sind die Leitplanken, an denen das Produkt entwickelt wird.</p>
+      <div class="kompendium">
+        <div class="kompendium-row">
+          <div class="kompendium-id">SGB V § 174a</div>
+          <div class="kompendium-name">Aufsuchende Versorgung in Pflegeeinrichtungen.</div>
+          <div class="kompendium-detail">Vordrucke und Abrechnung integriert. Jede Behandlung mit Diagnose, OPS-Code, BEMA-Position, Patienten­einwilligung — auto­strukturiert aus dem Diktat.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">BEMA § 22a</div>
+          <div class="kompendium-name">PA-Behandlung mit 8-stufigem Workflow.</div>
+          <div class="kompendium-detail">Compliance-Gate auf Schritt 4 (ATG): Sondierungs­tiefen vollständig vor Freigabe. Störfaktoren-Checkliste. AIT pro Quadrant. BEVa-Vergleich. UPT-Recall.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">GoBD</div>
+          <div class="kompendium-name">Tamper-evident Aufzeichnung.</div>
+          <div class="kompendium-detail">Eintrag wird nach Signatur gesiegelt. Nachträgliche Änderungen erzeugen einen neuen versionierten Eintrag, alter Stand bleibt sichtbar im Audit-Log.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">DSGVO · Art. 9</div>
+          <div class="kompendium-name">Besondere Kategorien personen­bezogener Daten.</div>
+          <div class="kompendium-detail">Verschlüsselung at-rest (AES-256, AWS S3 eu-central-1). In-transit (TLS 1.2+). Daten­bank in Frankfurt (Neon Postgres). Diktat-Audio wird transkribiert und verworfen. AVVs mit allen Auftrags­verarbeitern.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">Patientenrechte­gesetz</div>
+          <div class="kompendium-name">Datenzugang, Löschung, Portabilität.</div>
+          <div class="kompendium-detail">FHIR R4-Schema von Tag eins. Patienten­anfragen über Zugriffs-Workflow auditierbar. Export­fähig nach ePA und CGM myTI in Vorbereitung.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">SOC-2 · Type II</div>
+          <div class="kompendium-name">Mandanten­trennung und Zugriffs­kontrolle.</div>
+          <div class="kompendium-detail">Rollen­basierte Guards. <code>tenantPrisma</code>-Isolation auf API-Ebene. Audit-Plugin auf allen mutierenden Routen. Type-II-Zertifizierung in Vorbereitung.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== § IV · Träger ===================== -->
+  <section id="traeger" class="chapter">
+    <div class="container">
+      <div class="chapter-header">
+        <div class="chapter-mark">§ IV</div>
+        <div class="chapter-label">Träger</div>
+        <h2 class="chapter-title">Wer Aranthir trägt.</h2>
+      </div>
+      <div class="traeger">
+        <div class="traeger-prose">
+          Aranthir ist das nächste Kapitel der Arbeit, die wir 2024 in Berlin als <strong>Health Ledger</strong> begonnen haben. Der gleiche Anspruch, ein neuer Name: klinische Dokumentation auf dem Niveau eines Schweizer Bankarchivs, gebaut für die Realität der aufsuchenden Heim-Zahnmedizin in Deutschland.
+        </div>
+        <div class="traeger-meta">
+          <div class="traeger-card">
+            <div class="traeger-card-label">Hersteller</div>
+            <div class="traeger-card-title">SwissMedAI GmbH</div>
+            <div class="traeger-card-body">Schweizer Plattform für regulierte medizinische KI. Berlin · Zürich. Datenresidenz Schweiz und EU.</div>
+          </div>
+          <div class="traeger-card">
+            <div class="traeger-card-label">Gründung</div>
+            <div class="traeger-card-title">Jesús Gómez Rossi</div>
+            <div class="traeger-card-body">Klinischer Zahnarzt, Health-Ökonom, Gründer. Arbeitet aus Berlin. <a href="https://jesusgomezrossi.com" style="color:var(--accent-2); border-bottom:0.5px solid var(--accent-2);">jesusgomezrossi.com →</a></div>
+          </div>
+          <div class="traeger-card">
+            <div class="traeger-card-label">Pilotbetrieb</div>
+            <div class="traeger-card-title">Berlin · München</div>
+            <div class="traeger-card-body">Frühjahr 2026 — zwei Pilot­praxen mit aufsuchender Heim-Zahnmedizin. Internal Testing über Google Play.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== § V · Eintreten (CTA) ===================== -->
+  <section id="eintreten" class="eintreten">
+    <div class="container">
+      <div class="eintreten-stamp">§ V · Eintreten</div>
+      <h2 class="eintreten-title">Aranthir testen.</h2>
+      <p class="eintreten-italic">Demo-Termine vereinbaren wir persönlich, meist innerhalb einer Woche. Pilot­zugang ist begrenzt auf zahnärztliche Heim­versorger in Deutschland.</p>
+      <div class="eintreten-cta-row">
+        <a href="mailto:hello@aranthir.com" class="btn btn-primary">Demo anfragen →</a>
+        <a href="https://app.aranthir.com" class="btn btn-ghost">Bestehender Nutzer · Anmelden</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Footer ===================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-brand-row">
+            <svg class="brand-icon brand-icon-inverse" viewBox="0 0 512 512" aria-hidden="true">
+              <rect width="512" height="512" rx="96"/>
+              <text x="256" y="338" text-anchor="middle" font-family="Instrument Serif, serif" font-size="300">A</text>
+              <circle cx="256" cy="435" r="12"/>
+            </svg>
+            <span class="brand-name">Aranthir</span>
+          </div>
+          <p class="footer-tag">Die Akte, die sich selbst führt.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Produkt</h4>
+          <ul>
+            <li><a href="#methodologie">Methode</a></li>
+            <li><a href="#werkstatt">Werkstatt</a></li>
+            <li><a href="#kompendium">Compliance</a></li>
+            <li><a href="https://app.aranthir.com">Anmelden</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hersteller</h4>
+          <ul>
+            <li><a href="https://swissmed.ai">SwissMedAI</a></li>
+            <li><a href="https://jesusgomezrossi.com">Gründer</a></li>
+            <li><a href="mailto:hello@aranthir.com">Kontakt</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="#">Impressum</a></li>
+            <li><a href="#">Datenschutz</a></li>
+            <li><a href="#">AGB</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-signature">SwissMedAI GmbH · Berlin · Zürich · Edition 2026 · v0.1.0</div>
+        <div class="footer-signature">DE · <span style="color:var(--bone-trace);">EN</span></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Reveal-on-scroll for chapter sections
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('in');
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.chapter, .eintreten').forEach(el => {
+      el.classList.add('reveal');
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
