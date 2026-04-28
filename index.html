@@ -3,56 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aranthir — KI-Dokumentation für Heim-Zahnmedizin</title>
-  <meta name="description" content="Die KI-Dokumentationsplattform für die zahnärztliche Heimversorgung. Diktat zu Akte in einem Schritt. Entwickelt in der Schweiz von SwissMedAI.">
+  <title>Aranthir — Klinische Akte für aufsuchende Heim-Zahnmedizin</title>
+  <meta name="description" content="Aranthir gibt Heimbewohnern die Akte, die sie nicht selbst führen können. §174a, BEMA §22a, ZE-Pipeline. Schweizer Datenresidenz.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230A2E9E'/%3E%3Ctext x='256' y='338' text-anchor='middle' font-family='Instrument Serif,serif' font-size='300' fill='%23FFFFFF'%3EA%3C/text%3E%3Ccircle cx='256' cy='435' r='12' fill='%230FA37F'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23061F6E'/%3E%3Ctext x='256' y='338' text-anchor='middle' font-family='Instrument Serif,serif' font-size='300' fill='%23F4EFE6'%3EA%3C/text%3E%3Ccircle cx='362' cy='162' r='14' fill='%230FA37F'/%3E%3C/svg%3E">
 
   <style>
-    /* ============= Tokens ============= */
+    /* =============================================================
+       ARANTHIR · v5 (Ledger Religion)
+       Built against Health Ledger Design Spec v2 (Approved 2026-04-19)
+       Three pillars: QUIET · PRECISE · ARCHIVAL
+       Adjective test: "inevitable" is the highest compliment.
+    ============================================================= */
+
+    /* ====== Tokens ====== */
     :root {
-      --bg: #FAFAF7;
-      --bg-elev: #FFFFFF;
-      --bg-tint: #F0EFE9;
-      --bg-deep: #061F6E;
-      --navy: #0A2E9E;
-      --navy-2: #061F6E;
-      --blue: #2D5BF5;
-      --blue-light: #5A82FF;
-      --blue-50: #EBF0FF;
-      --blue-25: #F5F7FF;
-      --emerald: #0FA37F;
-      --emerald-light: #14C295;
-      --emerald-50: #E7F7F1;
-      --amber: #D97706;
-      --crimson: #C9313D;
-      --violet: #6C47FF;
-      --ink: #1B1B1A;
-      --slate: #4A4A47;
-      --fog: #8A8782;
-      --hairline: #E4DFD4;
-      --hairline-soft: #EFEAE0;
-      --ring-blue: 0 0 0 4px rgba(45, 91, 245, 0.18);
-      --shadow-sm: 0 1px 2px rgba(6, 31, 110, 0.04), 0 1px 0 rgba(6, 31, 110, 0.02);
-      --shadow-md: 0 8px 24px rgba(6, 31, 110, 0.06), 0 2px 6px rgba(6, 31, 110, 0.04);
-      --shadow-lg: 0 24px 64px rgba(6, 31, 110, 0.10), 0 6px 16px rgba(6, 31, 110, 0.05);
-      --shadow-xl: 0 40px 96px rgba(6, 31, 110, 0.18), 0 16px 32px rgba(6, 31, 110, 0.08);
+      /* The ground (paper) */
+      --bone:       #F4EFE6;   /* the page. warm, archival. */
+      --parchment:  #EAE3D3;   /* the panel. one step deeper. */
+      --cream:      #FAF6EE;   /* the lift. surfaces that float. */
+
+      /* The ink (instrument) */
+      --abyss:      #061F6E;   /* deepest. wax-seal. hero bg. */
+      --ink:        #0A2E9E;   /* primary. 90% of navy usage. */
+      --ink-2:      #1443C4;   /* hover/active. never a fill on its own. */
+      --ink-3:      #2F5CE0;   /* focus ring on navy surfaces. */
+
+      /* The signal (witness — ONE per screen) */
+      --signal:     #0FA37F;   /* the emerald dot. status, "done". */
+      --signal-2:   #14C295;   /* interactive only. */
+
+      /* The witness (destructive — used reluctantly) */
+      --ember:      #B54A2B;   /* not red. wax-seal cooled. */
+
+      /* Type */
+      --graphite:   #1B1B1A;   /* body on bone. not black. */
+      --slate:      #4A4A47;   /* secondary text. */
+      --fog:        #8A8782;   /* tertiary, captions, metadata. */
+      --hairline:   #D9D3C6;   /* every rule, every border. */
+      --chalk:      #FFFFFF;   /* only for text on ink/abyss. */
+
+      /* On-ink derivatives */
+      --bone-on-ink:        rgba(244, 239, 230, 1);
+      --bone-on-ink-dim:    rgba(244, 239, 230, 0.78);
+      --bone-on-ink-fade:   rgba(244, 239, 230, 0.55);
+      --bone-on-ink-trace:  rgba(244, 239, 230, 0.32);
+      --hairline-on-ink:    rgba(244, 239, 230, 0.16);
+      --hairline-on-ink-strong: rgba(244, 239, 230, 0.32);
+
+      /* The one shadow */
+      --lift: 0 1px 2px rgba(6,31,110,0.06), 0 8px 24px rgba(6,31,110,0.08);
+
+      /* The two curves */
+      --ease-standard:   cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-ceremonial: cubic-bezier(0.22, 1, 0.36, 1);
+
+      /* Space (4-point grid) */
+      --xs: 4px; --sm: 8px; --md: 12px; --lg: 16px; --xl: 24px; --xxl: 40px; --xxxl: 64px; --hero: 96px;
     }
 
-    /* ============= Reset ============= */
+    /* ====== Reset ====== */
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bone);
+      color: var(--graphite);
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 16px;
-      line-height: 1.55;
+      line-height: 1.45;
+      font-weight: 450;
+      font-variant-numeric: tabular-nums;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -60,1253 +85,1460 @@
     img, svg { display: block; max-width: 100%; }
     button { background: none; border: none; color: inherit; cursor: pointer; padding: 0; font: inherit; }
 
-    /* ============= Layout ============= */
+    /* ====== Material: Paper (the ground) ======
+       2% noise overlay applied via SVG turbulence, layered fixed. */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.024 0 0 0 0 0.122 0 0 0 0 0.431 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ====== Layout container ====== */
     .container {
       max-width: 1240px;
       margin: 0 auto;
-      padding: 0 32px;
+      padding: 0 var(--xxxl);
+      width: 100%;
+      position: relative;
+      z-index: 2;
     }
-    @media (max-width: 760px) { .container { padding: 0 20px; } }
+    @media (max-width: 760px) { .container { padding: 0 var(--xl); } }
 
-    .mono {
-      font-family: 'DM Mono', monospace;
-      letter-spacing: 0.02em;
-    }
-    .label-cap {
-      font-family: 'DM Mono', monospace;
+    /* ====== Type scale (the religion: 5 sizes only) ====== */
+    .t1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 48px; line-height: 1.05; letter-spacing: -0.02em; color: var(--graphite); }
+    .t2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 28px; line-height: 1.15; letter-spacing: -0.01em; color: var(--graphite); }
+    .t3 { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 20px; line-height: 1.35; color: var(--graphite); }
+    .t4 { font-family: 'Inter Tight', sans-serif; font-weight: 450; font-size: 16px; line-height: 1.45; color: var(--graphite); }
+    .t5 { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 13px; line-height: 1.25; color: var(--slate); }
+    .t5-mono { font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 13px; line-height: 1.25; color: var(--fog); }
+    .t5-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
       font-size: 11px;
+      line-height: 1.2;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--blue);
-      font-weight: 500;
+      color: var(--fog);
+    }
+    @media (min-width: 760px) {
+      .t1 { font-size: clamp(48px, 5.6vw, 76px); }
     }
 
-    /* ============= Pilot bar ============= */
-    .pilot-bar {
-      background: var(--bg-deep);
-      color: rgba(255,255,255,0.86);
-      font-size: 12.5px;
-      padding: 8px 0;
+    /* ====== Pilot bar (still — no pulse) ====== */
+    .pilot {
+      background: var(--abyss);
+      border-bottom: 1px solid var(--hairline-on-ink);
+      padding: 10px var(--xxxl);
       text-align: center;
-      letter-spacing: 0.01em;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bone-on-ink-fade);
+      position: relative;
+      z-index: 11;
     }
-    .pilot-bar .pulse {
+    .pilot .dot {
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 5px; height: 5px;
+      background: var(--signal);
       border-radius: 50%;
-      background: var(--emerald-light);
-      margin-right: 8px;
       vertical-align: middle;
-      animation: pulse 2s infinite;
-      box-shadow: 0 0 0 0 rgba(20, 194, 149, 0.5);
+      margin-right: 10px;
+      transform: translateY(-1px);
     }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(20, 194, 149, 0.5); }
-      70% { box-shadow: 0 0 0 8px rgba(20, 194, 149, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(20, 194, 149, 0); }
-    }
-    .pilot-bar a {
-      color: var(--emerald-light);
-      border-bottom: 0.5px solid currentColor;
+    .pilot a {
+      color: var(--bone-on-ink);
+      border-bottom: 1px solid var(--hairline-on-ink-strong);
       padding-bottom: 1px;
-      margin-left: 6px;
+      margin-left: 10px;
+      transition: border-color 0.2s var(--ease-standard);
     }
+    .pilot a:hover { border-color: var(--bone-on-ink); }
+    @media (max-width: 760px) { .pilot { padding: 10px var(--xl); font-size: 10px; letter-spacing: 0.14em; } }
 
-    /* ============= Masthead ============= */
+    /* ====== Masthead ====== */
     .masthead {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(250, 250, 247, 0.86);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 0.5px solid var(--hairline);
+      z-index: 10;
+      background: rgba(244, 239, 230, 0.86);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--hairline);
     }
     .masthead-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 0;
-      gap: 24px;
+      padding: var(--lg) 0;
+      gap: var(--xxl);
     }
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: var(--md);
     }
-    .brand-icon { width: 30px; height: 30px; flex-shrink: 0; }
+    .brand-icon { width: 30px; height: 30px; flex-shrink: 0; border-radius: 6px; }
     .brand-name {
       font-family: 'Instrument Serif', serif;
-      font-size: 24px;
+      font-size: 22px;
       letter-spacing: -0.012em;
-      color: var(--navy-2);
+      color: var(--abyss);
       line-height: 1;
       padding-top: 2px;
     }
     nav.primary {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: var(--xxl);
     }
-    nav.primary a.nav-link {
-      font-size: 14px;
-      font-weight: 500;
+    nav.primary .nav-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--slate);
-      transition: color 0.15s;
+      transition: color 0.2s var(--ease-standard);
     }
-    nav.primary a.nav-link:hover { color: var(--navy); }
-    .signin-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      background: var(--navy-2);
-      color: var(--bg);
-      font-size: 13.5px;
-      font-weight: 500;
-      border-radius: 6px;
-      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 1px 2px rgba(6, 31, 110, 0.12);
+    nav.primary .nav-link:hover { color: var(--abyss); }
+    .anmelden-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--abyss);
+      border-bottom: 1px solid var(--abyss);
+      padding-bottom: 2px;
+      transition: opacity 0.2s var(--ease-standard);
     }
-    .signin-btn:hover { background: var(--navy); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(6, 31, 110, 0.18); }
-    .signin-btn .arrow { transition: transform 0.2s; }
-    .signin-btn:hover .arrow { transform: translateX(2px); }
-    @media (max-width: 920px) {
-      nav.primary a.nav-link { display: none; }
+    .anmelden-link:hover { opacity: 0.7; }
+    .lang {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--fog);
+    }
+    .lang .on { color: var(--abyss); }
+    .lang .sep { margin: 0 6px; color: var(--hairline); }
+    @media (max-width: 1024px) {
+      nav.primary .nav-link { display: none; }
     }
 
-    /* ============= Hero ============= */
-    .hero {
-      padding: 120px 0 100px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: -200px; left: 50%;
-      transform: translateX(-50%);
-      width: 1200px; height: 800px;
-      background: radial-gradient(ellipse at center, rgba(45,91,245,0.06) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 80px;
-      align-items: center;
-      position: relative;
-    }
-    @media (max-width: 980px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 64px; }
-    }
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      background: var(--blue-50);
-      color: var(--navy);
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 500;
-      margin-bottom: 28px;
-      border: 0.5px solid rgba(45,91,245,0.12);
-    }
-    .hero-eyebrow .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--emerald);
-    }
-    .hero h1 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: clamp(48px, 6vw, 84px);
-      line-height: 1.0;
-      letter-spacing: -0.035em;
-      color: var(--navy-2);
-      margin: 0 0 24px;
-    }
-    .hero h1 .accent {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--blue);
-      letter-spacing: -0.025em;
-    }
-    .hero-tag {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 22px;
-      color: var(--slate);
-      margin: 0 0 24px;
-      letter-spacing: -0.005em;
-    }
-    .hero-lede {
-      font-size: 18px;
-      line-height: 1.6;
-      color: var(--slate);
-      max-width: 50ch;
-      margin: 0 0 36px;
-    }
-    .hero-cta-row {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 36px;
-    }
+    /* ====== Buttons (the religion: 5 radii, 1 shadow) ====== */
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 13px 22px;
-      font-size: 14.5px;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-      border: 0.5px solid transparent;
-      cursor: pointer;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary {
-      background: var(--navy-2);
-      color: var(--bg);
-      box-shadow: var(--shadow-sm);
-    }
-    .btn-primary:hover { background: var(--navy); box-shadow: var(--shadow-md); }
-    .btn-ghost {
-      background: var(--bg-elev);
-      color: var(--navy-2);
-      border-color: var(--hairline);
-      box-shadow: var(--shadow-sm);
-    }
-    .btn-ghost:hover { border-color: var(--navy); }
-    .btn-blue {
-      background: var(--blue);
-      color: white;
-      box-shadow: 0 4px 12px rgba(45,91,245,0.22);
-    }
-    .btn-blue:hover { background: var(--blue-light); box-shadow: 0 8px 24px rgba(45,91,245,0.32); }
-
-    .hero-meta {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-      font-size: 13px;
-      color: var(--fog);
-      flex-wrap: wrap;
-    }
-    .hero-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero-meta .check {
-      color: var(--emerald);
-      flex-shrink: 0;
-    }
-
-    /* Phone mockup right side */
-    .phone-frame {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      margin-left: auto;
-      aspect-ratio: 380/770;
-      background: var(--ink);
-      border-radius: 44px;
-      padding: 12px;
-      box-shadow: var(--shadow-xl);
-      transform: rotate(-2deg);
-    }
-    .phone-screen {
-      width: 100%; height: 100%;
-      background: var(--bg-elev);
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    .phone-notch {
-      position: absolute;
-      top: 8px; left: 50%;
-      transform: translateX(-50%);
-      width: 100px; height: 24px;
-      background: var(--ink);
-      border-radius: 14px;
-      z-index: 5;
-    }
-    .phone-statusbar {
-      padding: 14px 24px 8px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--ink);
-      font-weight: 600;
-    }
-    .phone-header {
-      padding: 12px 20px 16px;
-      border-bottom: 0.5px solid var(--hairline);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .phone-header-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 20px;
-      color: var(--navy-2);
-      letter-spacing: -0.01em;
-    }
-    .phone-pill {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 3px 7px;
-      background: var(--emerald-50);
-      color: var(--emerald);
-      border-radius: 4px;
-      font-weight: 600;
-    }
-    .phone-body {
-      flex: 1;
-      padding: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .phone-card {
-      background: var(--bg-elev);
-      border: 0.5px solid var(--hairline);
-      border-radius: 10px;
-      padding: 12px 14px;
-      box-shadow: var(--shadow-sm);
-    }
-    .phone-card.active {
-      border-color: var(--blue);
-      background: var(--blue-25);
-      box-shadow: 0 0 0 3px rgba(45,91,245,0.08);
-    }
-    .phone-card-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .phone-card-name {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-    .phone-card-meta {
-      font-size: 10px;
-      color: var(--fog);
-      margin-top: 2px;
-    }
-    .phone-status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .phone-status-dot.green { background: var(--emerald); }
-    .phone-status-dot.amber { background: var(--amber); }
-    .phone-status-dot.crimson { background: var(--crimson); }
-    .phone-recording {
-      margin-top: auto;
-      padding: 14px;
-      background: var(--navy-2);
-      color: white;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .phone-rec-pulse {
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: var(--crimson);
-      animation: pulse-rec 1.4s infinite;
-    }
-    @keyframes pulse-rec {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    .phone-rec-label {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      opacity: 0.78;
-    }
-    .phone-rec-time {
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .phone-bottom-bar {
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0 18px;
-      border-top: 0.5px solid var(--hairline);
-      background: var(--bg);
-    }
-    .phone-tab {
-      font-size: 10px;
-      color: var(--fog);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .phone-tab.active { color: var(--navy); font-weight: 600; }
-    .phone-tab-dot {
-      width: 18px; height: 4px;
-      background: currentColor;
-      border-radius: 2px;
-      opacity: 0.8;
-    }
-
-    /* ============= Trust bar ============= */
-    .trust-bar {
-      padding: 36px 0;
-      border-top: 0.5px solid var(--hairline);
-      border-bottom: 0.5px solid var(--hairline);
-      background: var(--bg-tint);
-    }
-    .trust-row {
-      display: flex;
-      align-items: center;
       justify-content: center;
-      gap: 36px;
-      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 26px;
+      font-family: 'Inter Tight', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0;
+      border: 1px solid transparent;
+      border-radius: 14px; /* radius.lg per spec */
+      cursor: pointer;
+      transition: background 0.2s var(--ease-standard),
+                  color 0.2s var(--ease-standard),
+                  border-color 0.2s var(--ease-standard);
     }
-    .trust-label {
-      font-family: 'DM Mono', monospace;
+    .btn-ink {
+      background: linear-gradient(167deg, var(--ink-2) 0%, var(--abyss) 100%);
+      color: var(--bone);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ink::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 30%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+      pointer-events: none;
+    }
+    .btn-ink:hover { background: linear-gradient(167deg, var(--ink) 0%, var(--abyss) 100%); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--graphite);
+      border-color: var(--hairline);
+    }
+    .btn-ghost:hover {
+      border-color: var(--abyss);
+      background: rgba(6, 31, 110, 0.02);
+    }
+
+    /* ====== Hero ======
+       Applies "The Ledger Move": display + italic pairing,
+       second line italic, arrives 200ms after first line. */
+    .hero {
+      padding: var(--hero) 0 calc(var(--hero) + var(--xxl));
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: var(--xxl);
+    }
+
+    /* THE LEDGER MOVE */
+    .hero-h1 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: clamp(40px, 6.5vw, 92px);
+      line-height: 1.04;
+      letter-spacing: -0.022em;
+      color: var(--abyss);
+      margin: 0 0 var(--xxl);
+      max-width: 22ch;
+    }
+    .hero-h1 .line-1 {
+      display: block;
+      font-style: normal;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: ledger-move-in 0.9s var(--ease-ceremonial) forwards;
+      animation-delay: 0.2s;
+    }
+    .hero-h1 .line-2 {
+      display: block;
+      font-style: italic;
+      color: var(--ink);
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(0.6px);
+      animation: ledger-move-in-italic 0.9s var(--ease-ceremonial) forwards;
+      animation-delay: 0.4s; /* 200ms after line 1 */
+    }
+    @keyframes ledger-move-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ledger-move-in-italic {
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    .hero-rule {
+      width: 80px;
+      height: 1px;
+      background: var(--abyss);
+      margin: var(--xxl) 0 var(--lg);
+      opacity: 0;
+      animation: rule-in 0.6s var(--ease-standard) forwards;
+      animation-delay: 0.7s;
+    }
+    @keyframes rule-in { to { opacity: 1; } }
+
+    .hero-tagline {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--slate);
+      margin: 0 0 var(--xxl);
+      opacity: 0;
+      animation: rule-in 0.7s var(--ease-ceremonial) forwards;
+      animation-delay: 0.85s;
+    }
+
+    .hero-lede {
+      max-width: 60ch;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--slate);
+      margin: 0 0 var(--xxl);
+      font-weight: 400;
+      opacity: 0;
+      animation: rule-in 0.7s var(--ease-standard) forwards;
+      animation-delay: 1.0s;
+    }
+    .hero-lede strong {
+      color: var(--graphite);
+      font-weight: 500;
+    }
+    .hero-lede em { font-style: italic; color: var(--ink); }
+
+    .hero-byline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin: 0 0 var(--xxl);
+      padding-top: var(--lg);
+      border-top: 1px solid var(--hairline);
+      max-width: 60ch;
+      opacity: 0;
+      animation: rule-in 0.7s var(--ease-standard) forwards;
+      animation-delay: 1.15s;
+    }
+    .hero-byline .person {
+      color: var(--abyss);
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      gap: var(--md);
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: rule-in 0.7s var(--ease-standard) forwards;
+      animation-delay: 1.3s;
+    }
+
+    /* The signature line — every section carries one */
+    .signature {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--lg);
+      margin-top: var(--xxl);
+      padding-top: var(--lg);
+      border-top: 1px dotted var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--fog);
+      flex-wrap: wrap;
     }
-    .trust-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      background: white;
-      border: 0.5px solid var(--hairline);
-      border-radius: 999px;
-      font-size: 12.5px;
-      color: var(--ink);
-      font-weight: 500;
-      box-shadow: var(--shadow-sm);
-    }
-    .trust-pill .check { color: var(--emerald); flex-shrink: 0; }
+    .signature .left { color: var(--slate); }
 
-    /* ============= Section ============= */
-    section.standard { padding: 120px 0; }
-    .section-head { max-width: 720px; margin: 0 auto 72px; text-align: center; }
-    .section-head .label-cap { display: inline-block; margin-bottom: 18px; }
-    .section-head h2 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: clamp(34px, 4.4vw, 56px);
-      letter-spacing: -0.025em;
-      line-height: 1.1;
-      color: var(--navy-2);
-      margin: 0 0 20px;
-    }
-    .section-head h2 .italic {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--blue);
-    }
-    .section-head p {
-      font-size: 18px;
-      line-height: 1.65;
+    /* The hero-margin (right-side note) */
+    .hero-margin {
+      position: absolute;
+      right: var(--xxxl);
+      top: 200px;
+      max-width: 220px;
+      padding: var(--lg) var(--xl);
+      border-left: 1px solid var(--abyss);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.6;
       color: var(--slate);
-      margin: 0;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      animation: rule-in 0.6s var(--ease-standard) forwards;
+      animation-delay: 1.4s;
     }
+    .hero-margin .label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: var(--md);
+    }
+    @media (max-width: 1180px) { .hero-margin { display: none; } }
 
-    /* ============= How it works ============= */
-    .how-grid {
+    /* ====== Section frame ====== */
+    section.chapter {
+      padding: var(--hero) 0;
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-head {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      position: relative;
+      grid-template-columns: 80px 200px 1fr;
+      gap: var(--xxl);
+      align-items: baseline;
+      margin-bottom: var(--xxxl);
+      padding-bottom: var(--xl);
+      border-bottom: 1px solid var(--hairline);
     }
-    @media (max-width: 880px) {
-      .how-grid { grid-template-columns: 1fr; gap: 24px; }
+    @media (max-width: 760px) {
+      .chapter-head { grid-template-columns: 1fr; gap: var(--md); }
     }
-    .how-card {
-      background: var(--bg-elev);
-      border: 0.5px solid var(--hairline);
-      border-radius: 16px;
-      padding: 36px 32px;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    }
-    .how-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--blue-50); }
-    .how-num {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      background: var(--navy-2);
-      color: white;
+    .chapter-mark {
       font-family: 'Instrument Serif', serif;
       font-style: italic;
       font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
+      color: var(--ink);
+      line-height: 1;
     }
-    .how-card h3 {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.015em;
-      color: var(--navy-2);
-      margin: 0 0 12px;
+    .chapter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
     }
-    .how-card p {
-      font-size: 15px;
-      color: var(--slate);
-      line-height: 1.6;
-      margin: 0 0 16px;
+    .chapter-title {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: clamp(32px, 4.6vw, 56px);
+      line-height: 1.08;
+      letter-spacing: -0.018em;
+      color: var(--abyss);
+      margin: 0;
+      max-width: 24ch;
     }
-    .how-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .how-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: 0.06em;
-      padding: 4px 9px;
-      background: var(--blue-25);
-      color: var(--blue);
-      border-radius: 4px;
-    }
+    .chapter-title .italic { font-style: italic; color: var(--ink); }
 
-    /* ============= Feature grid ============= */
-    .features {
-      background: var(--bg-elev);
-      border-top: 0.5px solid var(--hairline);
-      border-bottom: 0.5px solid var(--hairline);
+    .chapter-lede {
+      max-width: 64ch;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--slate);
+      margin: 0 0 var(--xxxl);
+      font-weight: 400;
     }
-    .feature-grid {
+    .chapter-lede strong { color: var(--graphite); font-weight: 500; }
+    .chapter-lede em { font-style: italic; color: var(--ink); }
+
+    /* ====== Methode (3 steps) ====== */
+    .method {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: var(--xxl);
     }
-    @media (max-width: 980px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) { .feature-grid { grid-template-columns: 1fr; } }
-    .feature-card {
-      padding: 32px;
-      background: var(--bg);
-      border: 0.5px solid var(--hairline);
-      border-radius: 14px;
-      transition: transform 0.2s, box-shadow 0.2s;
+    @media (max-width: 880px) {
+      .method { grid-template-columns: 1fr; gap: var(--xxl); }
+    }
+    .method-step {
+      padding-top: var(--xl);
+      border-top: 1px solid var(--graphite);
+    }
+    .method-num {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 56px;
+      line-height: 0.9;
+      color: var(--ink);
+      margin-bottom: var(--xl);
+    }
+    .method-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: var(--md);
+    }
+    .method-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: var(--abyss);
+      letter-spacing: -0.012em;
+      line-height: 1.15;
+      margin: 0 0 var(--lg);
+    }
+    .method-body {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--slate);
+      margin: 0 0 var(--xl);
+    }
+    .method-detail {
+      padding-top: var(--md);
+      border-top: 1px dotted var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--fog);
+      letter-spacing: 0.04em;
+    }
+
+    /* ====== Werkstatt (catalog) ====== */
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--hairline);
+    }
+    @media (max-width: 760px) { .catalog { grid-template-columns: 1fr; } }
+    .catalog-item {
+      padding: var(--xxl) var(--xl) var(--xxl) 0;
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+    }
+    .catalog-item:nth-child(odd) {
+      border-right: 1px solid var(--hairline);
+      padding-right: var(--xxl);
+    }
+    .catalog-item:nth-child(even) {
+      padding-left: var(--xxl);
+    }
+    @media (max-width: 760px) {
+      .catalog-item:nth-child(odd) { border-right: 0; padding-right: 0; }
+      .catalog-item:nth-child(even) { padding-left: 0; }
+    }
+    .catalog-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: var(--md);
+    }
+    .catalog-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      letter-spacing: -0.012em;
+      color: var(--abyss);
+      line-height: 1.1;
+      margin: 0 0 var(--md);
+    }
+    .catalog-italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: var(--ink);
+      margin-bottom: var(--lg);
+      line-height: 1.4;
+    }
+    .catalog-body {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--slate);
+      max-width: 50ch;
+    }
+    .catalog-detail-row {
+      margin-top: var(--xl);
+      padding-top: var(--md);
+      border-top: 1px dotted var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fog);
+      line-height: 1.6;
+    }
+
+    /* ====== Kompendium (legal-document layout) ====== */
+    .kompendium {
+      border-top: 1px solid var(--graphite);
+    }
+    .kompendium-row {
+      display: grid;
+      grid-template-columns: 220px 1fr 1.4fr;
+      gap: var(--xxl);
+      padding: var(--xl) 0;
+      border-bottom: 1px solid var(--hairline);
+      align-items: baseline;
+    }
+    @media (max-width: 880px) {
+      .kompendium-row { grid-template-columns: 1fr; gap: var(--md); padding: var(--lg) 0; }
+    }
+    .kompendium-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .kompendium-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      color: var(--abyss);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    .kompendium-detail {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--slate);
+    }
+    .kompendium-detail code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--ink);
+      background: var(--parchment);
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+    .kompendium-detail em { font-style: italic; color: var(--graphite); }
+
+    /* ====== Träger (founder + team) ====== */
+    .traeger-prose {
+      font-family: 'Instrument Serif', serif;
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--graphite);
+      letter-spacing: -0.005em;
+      max-width: 36ch;
+      margin: 0 0 var(--xxxl);
+    }
+    .traeger-prose strong {
+      font-style: italic;
+      color: var(--ink);
+      font-weight: 400;
+    }
+    .traeger-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--xxl);
+      margin-bottom: var(--xxl);
+    }
+    @media (max-width: 880px) {
+      .traeger-grid { grid-template-columns: 1fr; gap: var(--xxl); }
+    }
+    .traeger-card {
+      padding-top: var(--xl);
+      border-top: 1px solid var(--graphite);
+    }
+    .traeger-portrait {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--parchment);
+      margin-bottom: var(--xl);
       position: relative;
       overflow: hidden;
+      border-radius: 0; /* archival, square */
+      filter: grayscale(0.95);
     }
-    .feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .feature-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
+    .traeger-portrait .placeholder {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
       font-family: 'Instrument Serif', serif;
-      font-size: 22px;
-      font-weight: 500;
+      font-size: 96px;
+      color: var(--fog);
+      letter-spacing: -0.02em;
+      opacity: 0.3;
     }
-    .feature-icon.blue { background: var(--blue-50); color: var(--blue); }
-    .feature-icon.emerald { background: var(--emerald-50); color: var(--emerald); }
-    .feature-icon.violet { background: rgba(108,71,255,0.10); color: var(--violet); }
-    .feature-icon.amber { background: rgba(217,119,6,0.10); color: var(--amber); }
-    .feature-icon.crimson { background: rgba(201,49,61,0.10); color: var(--crimson); }
-    .feature-icon.navy { background: rgba(10,46,158,0.08); color: var(--navy-2); }
-    .feature-card h3 {
-      font-size: 18px;
-      font-weight: 600;
+    .traeger-portrait .caption {
+      position: absolute;
+      bottom: var(--md);
+      left: var(--md);
+      right: var(--md);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--slate);
+      text-align: left;
+    }
+    .traeger-role {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin-bottom: var(--md);
+    }
+    .traeger-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: var(--abyss);
       letter-spacing: -0.012em;
-      color: var(--navy-2);
-      margin: 0 0 8px;
+      line-height: 1.1;
+      margin: 0 0 var(--sm);
     }
-    .feature-card .feature-italic {
+    .traeger-loc {
       font-family: 'Instrument Serif', serif;
       font-style: italic;
-      font-size: 14px;
-      color: var(--blue);
-      margin-bottom: 12px;
+      font-size: 16px;
+      color: var(--ink);
+      margin-bottom: var(--lg);
+      line-height: 1.4;
     }
-    .feature-card p {
+    .traeger-bio {
       font-size: 14.5px;
-      color: var(--slate);
       line-height: 1.6;
-      margin: 0;
+      color: var(--slate);
+      margin: 0 0 var(--md);
     }
-    .feature-card .feature-tag {
+    .traeger-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 1px;
+      transition: opacity 0.2s var(--ease-standard);
+    }
+    .traeger-link:hover { opacity: 0.7; }
+
+    .pilot-footnote {
+      padding-top: var(--xl);
+      border-top: 1px dotted var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fog);
+      line-height: 1.6;
+    }
+
+    /* ====== FAQ (Bedenken) — Glass material ====== */
+    .faq {
+      border-top: 1px solid var(--hairline);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--hairline);
+      transition: background 0.3s var(--ease-standard);
+    }
+    .faq-item.open {
+      background: var(--cream);
+      border-top: 1px solid var(--hairline);
+      margin-top: -1px;
+    }
+    .faq-trigger {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 220px 1fr 24px;
+      gap: var(--xxl);
+      padding: var(--xl) 0;
+      align-items: baseline;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+    }
+    @media (max-width: 760px) {
+      .faq-trigger { grid-template-columns: 1fr 24px; gap: var(--lg); padding: var(--lg) 0; }
+      .faq-id-mobile { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; color: var(--ink); margin-bottom: var(--xs); }
+      .faq-id-desktop { display: none; }
+    }
+    @media (min-width: 761px) {
+      .faq-id-mobile { display: none; }
+    }
+    .faq-id-desktop {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .faq-question {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--abyss);
+      letter-spacing: -0.005em;
+      line-height: 1.3;
+    }
+    .faq-toggle {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: var(--ink);
+      width: 24px;
+      text-align: center;
+      line-height: 1;
+      transition: transform 0.3s var(--ease-standard);
+    }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease-standard);
+    }
+    .faq-item.open .faq-answer { max-height: 800px; }
+    .faq-answer-inner {
+      padding: 0 24px var(--xl) 244px;
+      max-width: 76ch;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--slate);
+    }
+    .faq-answer-inner strong { color: var(--graphite); font-weight: 500; }
+    .faq-answer-inner em { font-style: italic; color: var(--ink); }
+    @media (max-width: 760px) {
+      .faq-answer-inner { padding: 0 0 var(--lg) 0; }
+    }
+
+    /* ====== Eintreten (final CTA) — Ink material ====== */
+    .eintreten {
+      padding: var(--hero) 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(167deg, var(--ink-2) 0%, var(--abyss) 100%);
+      color: var(--bone);
+    }
+    .eintreten::before {
+      content: "";
       position: absolute;
-      top: 24px; right: 28px;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.1em;
+      inset: 0 0 auto 0;
+      height: 25%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+      pointer-events: none;
+    }
+    .eintreten .container { position: relative; z-index: 2; }
+
+    /* The seal-moment hairline (Latin abbreviation: ad signandum) */
+    .eintreten-frame {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+      padding: var(--xxxl) var(--xl);
+      border-top: 1px solid var(--hairline-on-ink-strong);
+      border-bottom: 1px solid var(--hairline-on-ink-strong);
+      position: relative;
+    }
+    .eintreten-stamp {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--bone-on-ink-fade);
+      margin-bottom: var(--xxl);
+    }
+    .eintreten-h1 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: clamp(40px, 6vw, 76px);
+      letter-spacing: -0.022em;
+      color: var(--bone);
+      line-height: 1.05;
+      margin: 0 0 var(--lg);
+    }
+    .eintreten-h1 .italic { font-style: italic; color: var(--bone-on-ink-dim); }
+    .eintreten-italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--bone-on-ink-dim);
+      margin: 0 auto var(--xxl);
+      max-width: 44ch;
+      line-height: 1.4;
+    }
+    .eintreten-body {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--bone-on-ink-dim);
+      max-width: 56ch;
+      margin: 0 auto var(--xxl);
+    }
+    .eintreten-body strong { color: var(--bone); font-weight: 500; }
+    .eintreten-body em { font-style: italic; color: var(--bone); }
+    .eintreten-cta {
+      display: inline-flex;
+      gap: var(--md);
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: var(--xl);
+    }
+    .btn-on-ink-primary {
+      background: var(--bone);
+      color: var(--abyss);
+    }
+    .btn-on-ink-primary:hover { background: var(--cream); }
+    .btn-on-ink-ghost {
+      background: transparent;
+      color: var(--bone);
+      border-color: var(--hairline-on-ink-strong);
+    }
+    .btn-on-ink-ghost:hover {
+      border-color: var(--bone);
+      background: rgba(244,239,230,0.04);
+    }
+    .eintreten-whisper {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--bone-on-ink-fade);
+    }
+
+    /* The signature block (date · ID · version) on every section */
+    .section-sig {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--lg);
+      margin-top: var(--xxl);
+      padding-top: var(--lg);
+      border-top: 1px dotted var(--hairline);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--fog);
+      flex-wrap: wrap;
+    }
+    .section-sig .right { color: var(--slate); }
+    .section-sig.on-ink {
+      border-top-color: var(--hairline-on-ink-strong);
+      color: var(--bone-on-ink-fade);
+    }
+    .section-sig.on-ink .right { color: var(--bone-on-ink-dim); }
+
+    /* ====== Footer ====== */
+    footer {
+      padding: var(--hero) 0 var(--xxxl);
+      background: var(--bone);
+      border-top: 1px solid var(--hairline);
+    }
+    .footer-strap {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px;
+      color: var(--abyss);
+      letter-spacing: -0.005em;
+      max-width: 22ch;
+      margin: 0 0 var(--xxxl);
+      line-height: 1.25;
+    }
+    .footer-strap .italic { font-style: italic; color: var(--ink); }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--xxl);
+      padding-bottom: var(--xxl);
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: var(--xl);
+    }
+    @media (max-width: 880px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--xl); }
+    }
+    .footer-col h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--fog);
+      margin: 0 0 var(--lg);
+      font-weight: 500;
+    }
+    .footer-col ul { list-style: none; padding: 0; margin: 0; }
+    .footer-col li { margin-bottom: var(--md); }
+    .footer-col a {
+      font-size: 14px;
+      color: var(--slate);
+      transition: color 0.2s var(--ease-standard);
+    }
+    .footer-col a:hover { color: var(--abyss); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: var(--lg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--fog);
     }
 
-    /* ============= Compliance ============= */
-    .compliance-section {
-      background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%);
-      color: white;
-      padding: 120px 0;
-      position: relative;
-      overflow: hidden;
-    }
-    .compliance-section .section-head { color: white; }
-    .compliance-section .section-head .label-cap { color: var(--emerald-light); }
-    .compliance-section .section-head h2 { color: white; }
-    .compliance-section .section-head h2 .italic { color: var(--emerald-light); }
-    .compliance-section .section-head p { color: rgba(255,255,255,0.72); }
-    .compliance-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    @media (max-width: 880px) {
-      .compliance-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 560px) {
-      .compliance-grid { grid-template-columns: 1fr; }
-    }
-    .compliance-tile {
-      background: rgba(255,255,255,0.04);
-      border: 0.5px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 24px 22px;
-      backdrop-filter: blur(20px);
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .compliance-tile:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(20,194,149,0.3);
-    }
-    .compliance-id {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--emerald-light);
-      margin-bottom: 10px;
-      font-weight: 500;
-    }
-    .compliance-tile h3 {
-      font-family: 'Instrument Serif', serif;
-      font-size: 19px;
-      color: white;
-      margin: 0 0 10px;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      font-weight: 400;
-    }
-    .compliance-tile p {
-      font-size: 13.5px;
-      color: rgba(255,255,255,0.72);
-      line-height: 1.55;
-      margin: 0;
-    }
-
-    /* ============= Team ============= */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-    }
-    @media (max-width: 880px) { .team-grid { grid-template-columns: 1fr; } }
-    .team-card {
-      background: var(--bg-elev);
-      border: 0.5px solid var(--hairline);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .team-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .team-portrait {
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, var(--bg-tint), var(--hairline));
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      filter: grayscale(0.9);
-    }
-    .team-portrait .placeholder-mark {
-      font-family: 'Instrument Serif', serif;
-      font-size: 88px;
-      color: var(--navy-2);
-      opacity: 0.18;
-    }
-    .team-info { padding: 24px 28px 28px; }
-    .team-role {
-      font-family: 'DM Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 8px;
-    }
-    .team-name {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.012em;
-      color: var(--navy-2);
-      margin: 0 0 6px;
-    }
-    .team-loc {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 14px;
-      color: var(--slate);
-      margin-bottom: 10px;
-    }
-    .team-bio {
-      font-size: 14px;
-      color: var(--slate);
-      line-height: 1.55;
-      margin: 0;
-    }
-
-    /* ============= Final CTA ============= */
-    .final-cta {
-      padding: 100px 0 140px;
-    }
-    .final-cta-card {
-      background: linear-gradient(135deg, var(--navy-2), var(--navy) 60%, var(--blue));
-      border-radius: 24px;
-      padding: 80px 56px;
-      color: white;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-    }
-    .final-cta-card::before {
-      content: "A";
-      position: absolute;
-      top: 50%; right: -8%;
-      transform: translateY(-50%);
-      font-family: 'Instrument Serif', serif;
-      font-size: 540px;
-      color: rgba(255,255,255,0.05);
-      line-height: 1;
-      pointer-events: none;
-    }
-    .final-cta-card h2 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: clamp(34px, 4.4vw, 52px);
-      letter-spacing: -0.025em;
-      margin: 0 0 16px;
-      position: relative;
-      z-index: 1;
-    }
-    .final-cta-card h2 .italic {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--emerald-light);
-    }
-    .final-cta-card p {
-      font-size: 18px;
-      color: rgba(255,255,255,0.78);
-      max-width: 600px;
-      margin: 0 auto 36px;
-      position: relative;
-      z-index: 1;
-    }
-    .final-cta-row {
-      display: inline-flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
-    }
-    .btn-on-dark-primary {
-      background: white;
-      color: var(--navy-2);
-    }
-    .btn-on-dark-primary:hover { background: var(--bg-tint); }
-    .btn-on-dark-ghost {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 0.5px solid rgba(255,255,255,0.3);
-    }
-    .btn-on-dark-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.5); }
-
-    /* ============= Footer ============= */
-    footer {
-      background: var(--bg-deep);
-      color: rgba(255,255,255,0.78);
-      padding: 80px 0 56px;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr 1fr 1fr;
-      gap: 48px;
-      padding-bottom: 56px;
-      border-bottom: 0.5px solid rgba(255,255,255,0.10);
-      margin-bottom: 32px;
-    }
-    @media (max-width: 880px) {
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .footer-brand-block { display: flex; flex-direction: column; gap: 18px; }
-    .footer-brand-block .brand { gap: 12px; }
-    .footer-brand-block .brand-name { color: white; font-size: 26px; }
-    .footer-brand-block p {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 17px;
-      color: rgba(255,255,255,0.72);
-      max-width: 32ch;
-      line-height: 1.5;
-      margin: 0;
-    }
-    .footer-col h4 {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--emerald-light);
-      margin: 0 0 18px;
-      font-weight: 500;
-    }
-    .footer-col ul { list-style: none; padding: 0; margin: 0; }
-    .footer-col li { margin-bottom: 12px; }
-    .footer-col a { font-size: 14px; color: rgba(255,255,255,0.72); transition: color 0.15s; }
-    .footer-col a:hover { color: white; }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-    }
-
-    /* ============= Reveal ============= */
-    .reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    /* ====== Reveal-on-scroll ====== */
+    .reveal { opacity: 0; transform: translateY(8px); transition: opacity 0.8s var(--ease-ceremonial), transform 0.8s var(--ease-ceremonial); }
     .reveal.in { opacity: 1; transform: none; }
+
+    /* ====== Reduced motion ====== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ===================== Pilot bar ===================== -->
-  <div class="pilot-bar">
-    <span class="pulse"></span>
-    <span>Pilotbetrieb · Frühjahr 2026 · Begrenzte Plätze für Heim-Zahnärzte</span>
-    <a href="#contact">Bewerbung →</a>
+  <!-- ============================================================
+       PILOT BAR · still, no pulse (the splash is the only indulgence)
+  ============================================================ -->
+  <div class="pilot">
+    <span class="dot"></span>Pilotbetrieb · Frühjahr 2026 · zahnärztliche Heimversorger DACH<a href="#eintreten">Bewerbung →</a>
   </div>
 
-  <!-- ===================== Masthead ===================== -->
+  <!-- ============================================================
+       MASTHEAD · paper bg, hairline bottom, no shadow
+  ============================================================ -->
   <header class="masthead">
     <div class="container masthead-inner">
       <a href="#" class="brand" aria-label="Aranthir">
-        <svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true">
-          <rect width="512" height="512" rx="96" fill="#0A2E9E"/>
-          <text x="256" y="338" text-anchor="middle" font-family="Instrument Serif, serif" font-size="300" fill="#FFFFFF">A</text>
-          <circle cx="256" cy="435" r="12" fill="#0FA37F"/>
+        <svg class="brand-icon" viewBox="0 0 240 240" aria-hidden="true">
+          <rect width="240" height="240" rx="52" fill="#061F6E"/>
+          <text x="120" y="160" text-anchor="middle" font-family="Instrument Serif, serif" font-size="160" fill="#F4EFE6">A</text>
+          <circle cx="170" cy="76" r="7" fill="#0FA37F"/>
         </svg>
         <span class="brand-name">Aranthir</span>
       </a>
       <nav class="primary">
         <a href="#methode" class="nav-link">Methode</a>
-        <a href="#features" class="nav-link">Features</a>
-        <a href="#compliance" class="nav-link">Compliance</a>
-        <a href="#team" class="nav-link">Team</a>
-        <a href="https://app.aranthir.com" class="signin-btn">
-          Anmelden <span class="arrow">→</span>
-        </a>
+        <a href="#werkstatt" class="nav-link">Werkstatt</a>
+        <a href="#kompendium" class="nav-link">Kompendium</a>
+        <a href="#traeger" class="nav-link">Träger</a>
+        <a href="#bedenken" class="nav-link">Bedenken</a>
+        <a href="#eintreten" class="anmelden-link">Demo anfragen →</a>
+        <span class="lang"><span class="on">DE</span><span class="sep">·</span><span>EN</span></span>
       </nav>
     </div>
   </header>
 
-  <!-- ===================== Hero ===================== -->
+  <!-- ============================================================
+       HERO · The Ledger Move
+       Display + italic pairing. Italic line arrives 200ms after.
+  ============================================================ -->
   <section class="hero">
     <div class="container">
-      <div class="hero-grid">
-        <div>
-          <span class="hero-eyebrow">
-            <span class="dot"></span>
-            Aranthir · von SwissMedAI · Made in Switzerland
-          </span>
-          <h1>Klinische Doku­men­ta­tion, die sich <span class="accent">selbst führt.</span></h1>
-          <p class="hero-tag">Die Akte, die sich selbst führt — <em>The record that writes itself.</em></p>
-          <p class="hero-lede">Aranthir hört die Behandlung mit, strukturiert das Diktat in den passenden deutschen Vordruck, zeigt es zum Gegenlesen und siegelt den Eintrag. Aufsuchende Heim-Zahnmedizin ohne 30 Minuten Papier­arbeit am Abend.</p>
-          <div class="hero-cta-row">
-            <a href="#contact" class="btn btn-blue">Demo anfragen <span>→</span></a>
-            <a href="#methode" class="btn btn-ghost">Wie es funktioniert</a>
+      <div class="hero-eyebrow">Aufsuchende Heim-Zahnmedizin · Klinische Akte · Schweiz</div>
+
+      <h1 class="hero-h1">
+        <span class="line-1">Aranthir gibt Heim­bewohnern</span>
+        <span class="line-2">die Akte, die sie nicht selbst führen können.</span>
+      </h1>
+
+      <div class="hero-rule"></div>
+
+      <p class="hero-tagline">Die Akte, die sich selbst führt.</p>
+
+      <p class="hero-lede">Vier Gewinne aus einem Mechanismus: <strong>Kontinuität</strong> für den Heimbewohner, <strong>der Abend zurück</strong> für den Behandler, <strong>Compliance</strong> für die Praxis, <strong>eine saubere Akte</strong> für die Krankenkasse. Aranthir schreibt die Akte während der Behandlung — am Bett, nicht am Schreibtisch. <em>Es ist kein Produkt mit einem moralischen Beipack. Es ist ein System, in dem die Sorgfalt für den Bewohner die Effizienz aller anderen produziert.</em></p>
+
+      <p class="hero-byline">Herausgegeben von <span class="person">Jesús Gómez Rossi</span> · Klinischer Zahnarzt · Berlin · SwissMedAI GmbH</p>
+
+      <div class="hero-cta">
+        <a href="#eintreten" class="btn btn-ink">Demo anfragen.</a>
+        <a href="#methode" class="btn btn-ghost">Methode lesen.</a>
+      </div>
+
+      <div class="signature">
+        <span class="left">Aranthir · Edition 2026 · v 0.1.0</span>
+        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
+      </div>
+    </div>
+
+    <aside class="hero-margin">
+      <span class="label">Erscheinungsort</span>
+      Berlin · Zürich. Pilotbetrieb mit Praxis Dr. Feld (Berlin) und Praxis Dr. Hess (München). Schweizer Datenresidenz, deutsche Vorschrift.
+    </aside>
+  </section>
+
+  <!-- ============================================================
+       § I · METHODE
+  ============================================================ -->
+  <section id="methode" class="chapter">
+    <div class="container">
+      <div class="chapter-head">
+        <div class="chapter-mark">§ I</div>
+        <div class="chapter-label">Methode</div>
+        <h2 class="chapter-title">Die Behandlung wird mitgeschrieben — <span class="italic">nicht nachgeschrieben.</span></h2>
+      </div>
+      <p class="chapter-lede">Sie diktieren bereits. Aranthir entfernt den Schritt, an dem die Genauigkeit sonst verloren geht — den Abend am Schreibtisch. <strong>Drei Schritte, eine Akte.</strong> Die Methode ist nicht neu. Die Methode ist endlich vollständig.</p>
+
+      <div class="method">
+        <article class="method-step">
+          <div class="method-num">i</div>
+          <div class="method-name">Mithören</div>
+          <h3 class="method-title">Während der Behandlung. Mit Handschuhen. Ohne Schreibtisch.</h3>
+          <p class="method-body">Aranthir hört das Behandlungs­gespräch in der gewohnten Sprache mit. Das Diktat bleibt am Gerät, bis Sie freigeben — kein Audio in der Cloud, kein Audio im Modell­training.</p>
+          <div class="method-detail">Whisper · DE-klinisch · offline-fähig · Audio nach Transkription verworfen</div>
+        </article>
+
+        <article class="method-step">
+          <div class="method-num">ii</div>
+          <div class="method-name">Strukturieren</div>
+          <h3 class="method-title">Die KI füllt den passenden deutschen Vordruck.</h3>
+          <p class="method-body">§174a, BEMA §22a, ZE-Pipeline, HKP. Jede Zeile am richtigen Ort. Fehlende Felder sind sichtbar, nicht versteckt. Sondierungs­tiefen sind erst dann vollständig, wenn sie wirklich vollständig sind.</p>
+          <div class="method-detail">§174a · 13 Stufen · BEMA §22a · 8 Schritte · ZE · 11 Zustände · HKP · Vordruck 10</div>
+        </article>
+
+        <article class="method-step">
+          <div class="method-num">iii</div>
+          <div class="method-name">Siegeln</div>
+          <h3 class="method-title">Sie lesen gegen, signieren, fertig.</h3>
+          <p class="method-body">Der Eintrag wird gesiegelt — nachträgliche Änderungen erzeugen einen versionierten Eintrag, der alte Stand bleibt sichtbar. Was Sie unterschrieben haben, ist, was Sie unterschrieben haben.</p>
+          <div class="method-detail">GoBD-Tamper-evident · digitale Signatur · Zeitstempel · Audit-Log · PDF-Export</div>
+        </article>
+      </div>
+
+      <div class="section-sig">
+        <span>§ I · Methode · Aranthir · Edition 2026</span>
+        <span class="right">Drei Schritte · eine Akte</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       § II · WERKSTATT
+  ============================================================ -->
+  <section id="werkstatt" class="chapter">
+    <div class="container">
+      <div class="chapter-head">
+        <div class="chapter-mark">§ II</div>
+        <div class="chapter-label">Werkstatt</div>
+        <h2 class="chapter-title">Jeder deutsche Vordruck ist <span class="italic">bereits vorinstalliert.</span></h2>
+      </div>
+      <p class="chapter-lede">Aranthir ist kein generisches Praxis-Werkzeug, das man an die Heim-Realität anpasst. Vom Sondierungs­raster bis zur Vollprothesen-Anprobe ist die ganze aufsuchende Heim-Zahnmedizin im Werkzeug­kasten. <em>Spezifisch, weil die Vorschrift spezifisch ist.</em></p>
+
+      <div class="catalog">
+        <article class="catalog-item">
+          <div class="catalog-tag">KI-Diktat</div>
+          <h3 class="catalog-title">Sprache zu Akte.</h3>
+          <p class="catalog-italic">Whisper-Transkription mit klinischem Vokabular.</p>
+          <p class="catalog-body">Die Behandlung wird auf Deutsch mitgeschrieben. KI-Modelle erkennen Befunde, Behandlungs­schritte, Material­codes. Der rohe Transkript bleibt am Gerät, bis Sie freigeben.</p>
+          <div class="catalog-detail-row">Whisper · DE-klinisch · offline · Audio verworfen</div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">PA · BEMA § 22a</div>
+          <h3 class="catalog-title">Acht Schritte mit Compliance-Gate.</h3>
+          <p class="catalog-italic">Befund → Störfaktoren → Vordruck → ATG → MHU → AIT → BEVa → UPT.</p>
+          <p class="catalog-body">Jeder Schritt mit eigenem Gate. Sondierungs­tiefen müssen vollständig sein, bevor die ATG freigegeben wird. Dokumentations­lücken sind technisch ausgeschlossen, nicht nur unerwünscht.</p>
+          <div class="catalog-detail-row">8 Schritte · Sondierungstiefen-Gate · BEMA-konform</div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">§ 174a SGB V</div>
+          <h3 class="catalog-title">13-stufiger Vordruck-Wizard.</h3>
+          <p class="catalog-italic">Vom Bett zur abrechnungs­fähigen Akte in einem Schritt.</p>
+          <p class="catalog-body">Diagnose, OPS-Codes, BEMA-Position, Patienten­einwilligung — die KI füllt aus dem Diktat vor, der Behandler liest gegen. Fehlende Felder sind sichtbar markiert, nicht versteckt.</p>
+          <div class="catalog-detail-row">13 Stufen · PDF-Export · Krankenkassen­konform</div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">ZE · Zahnersatz</div>
+          <h3 class="catalog-title">Elf Zustände vom Befund zur Eingliederung.</h3>
+          <p class="catalog-italic">Anzeige · Vordruck 10 · HKP · Labor · Anprobe · Eingliederung.</p>
+          <p class="catalog-body">Jeder Prothesen­fall durchläuft elf dokumentierte Zustände. Vollprothesen erhalten zwei Phasen. Lab-Kanban hängt synchron daran — die Zahn­technik weiß, wo der Fall steht.</p>
+          <div class="catalog-detail-row">11 Zustände · 2-Phasen Vollprothese · Lab-Kanban</div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">PA-Befund · 32 × 2</div>
+          <h3 class="catalog-title">Tiefen pro Zahn, mesial und distal.</h3>
+          <p class="catalog-italic">Farb­codiert nach Schweregrad. BOP- und Mobilitäts­markierung.</p>
+          <p class="catalog-body">Das vollständige PA-Blatt, digital. 32 Zähne × 2 Mess­punkte = 64 Datenpunkte pro Patient. Wer gemessen hat, mit welchem Wert, an welchem Tag — alles im Audit-Log.</p>
+          <div class="catalog-detail-row">64 Datenpunkte · BOP · Mobilität · Verlauf</div>
+        </article>
+
+        <article class="catalog-item">
+          <div class="catalog-tag">Verwaltung · Ampel</div>
+          <h3 class="catalog-title">Sofort · Fristen · Administrativ · Klinisch.</h3>
+          <p class="catalog-italic">Eine Maske über alle Heime, alle Behandler, alle Fristen.</p>
+          <p class="catalog-body">Verstöße rot, offene HKPs amber, abrechenbar grün. Der Praxis-Manager liest Risiken auf einer Etage ab — kein Excel-Spagat, keine Telefonkette. CSV-Export für WiPrü-Vorbereitung.</p>
+          <div class="catalog-detail-row">Heim-Übersicht · Ampel · CSV-Export · WiPrü-bereit</div>
+        </article>
+      </div>
+
+      <div class="section-sig">
+        <span>§ II · Werkstatt · Aranthir · Edition 2026</span>
+        <span class="right">Sechs Module · ein Datenstand</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       § III · KOMPENDIUM
+  ============================================================ -->
+  <section id="kompendium" class="chapter">
+    <div class="container">
+      <div class="chapter-head">
+        <div class="chapter-mark">§ III</div>
+        <div class="chapter-label">Kompendium</div>
+        <h2 class="chapter-title">Vorschrift ist nicht das Ende der Liste — <span class="italic">sie ist der Bauplan.</span></h2>
+      </div>
+      <p class="chapter-lede">Aranthir ist <em>für</em> regulierte Heim-Zahnmedizin gebaut, nicht <em>an</em> sie angepasst. Sechs Vorschriften sind die Leit­planken — nicht Anhang am Ende der Spezifikation, sondern Anfang.</p>
+
+      <div class="kompendium">
+        <div class="kompendium-row">
+          <div class="kompendium-id">SGB V · § 174a</div>
+          <div class="kompendium-name">Aufsuchende Versorgung in Pflege­einrichtungen.</div>
+          <div class="kompendium-detail">Vordrucke und Abrechnung integriert. Diagnose, OPS-Code, BEMA-Position, Einwilligung — autostrukturiert aus dem Diktat. <em>Die §174a wird nicht Aufgabe nach der Behandlung, sondern Ergebnis aus der Behandlung.</em></div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">BEMA · § 22a</div>
+          <div class="kompendium-name">PA mit acht Schritten und einem Gate.</div>
+          <div class="kompendium-detail">Sondierungs­tiefen-Vollständigkeit ist Voraussetzung für ATG-Freigabe — nicht freundliche Empfehlung, sondern Workflow-Gate. Störfaktoren-Checkliste, AIT pro Quadrant, BEVa-Vergleich, UPT-Recall.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">GoBD</div>
+          <div class="kompendium-name">Tamper-evident Aufzeichnung.</div>
+          <div class="kompendium-detail">Eintrag wird nach Signatur gesiegelt. Nachträgliche Änderungen erzeugen einen versionierten Eintrag, der alte Stand bleibt sichtbar. <em>Eine Akte ohne Geschichte ist keine Akte.</em></div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">DSGVO · Art. 9</div>
+          <div class="kompendium-name">Schweizer Datenresidenz für besondere Kategorien.</div>
+          <div class="kompendium-detail">Verschlüsselung at-rest (AES-256, AWS S3 eu-central-1). In-transit (TLS 1.2+). Datenbank in Frankfurt (Neon Postgres). Diktat-Audio wird nach Transkription verworfen. AVVs mit allen Auftrags­verarbeitern.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">Patientenrechtegesetz</div>
+          <div class="kompendium-name">Datenzugang, Löschung, Portabilität.</div>
+          <div class="kompendium-detail">FHIR R4-Schema von Tag eins. Patienten­anfragen über auditierbaren Zugriffs-Workflow. Export­fähig nach ePA und CGM myTI in Vorbereitung.</div>
+        </div>
+        <div class="kompendium-row">
+          <div class="kompendium-id">SOC-2 · Type II</div>
+          <div class="kompendium-name">Mandanten­trennung und Zugriffs­kontrolle.</div>
+          <div class="kompendium-detail">Rollen­basierte Guards. <code>tenantPrisma</code>-Isolation auf API-Ebene. Audit-Plugin auf allen mutierenden Routen. Type-II-Zertifizierung in Vorbereitung; bis dahin: die Architektur ist Type-II-konform geschrieben, nicht hinterher angepasst.</div>
+        </div>
+      </div>
+
+      <div class="section-sig">
+        <span>§ III · Kompendium · Aranthir · Edition 2026</span>
+        <span class="right">Sechs Vorschriften · ein Bauplan</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       § IV · TRÄGER
+  ============================================================ -->
+  <section id="traeger" class="chapter">
+    <div class="container">
+      <div class="chapter-head">
+        <div class="chapter-mark">§ IV</div>
+        <div class="chapter-label">Träger</div>
+        <h2 class="chapter-title">Geschrieben von einem Zahnarzt, <span class="italic">der die §174a selbst kennt.</span></h2>
+      </div>
+
+      <p class="traeger-prose">Aranthir ist nicht das Produkt eines Tech-Teams, das Zahnmedizin als Markt­segment entdeckt hat. Aranthir ist das nächste Kapitel der Arbeit, die wir 2024 in Berlin als <strong>Health Ledger</strong> begonnen haben. Der gleiche Anspruch, ein neuer Name: klinische Dokumentation auf dem Niveau eines Schweizer Bank­archivs, gebaut für die Realität der aufsuchenden Heim-Zahnmedizin in Deutschland — von Menschen, die diese Realität jeden Heim-Tag selbst erleben.</p>
+
+      <div class="traeger-grid">
+        <article class="traeger-card">
+          <div class="traeger-portrait">
+            <div class="placeholder">JG</div>
+            <div class="caption">Portrait · B&amp;W editorial · zu liefern</div>
           </div>
-          <div class="hero-meta">
-            <span class="hero-meta-item"><svg class="check" width="14" height="14" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> §174a-konform</span>
-            <span class="hero-meta-item"><svg class="check" width="14" height="14" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Schweizer Datenresidenz</span>
-            <span class="hero-meta-item"><svg class="check" width="14" height="14" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> BEMA §22a integriert</span>
+          <div class="traeger-role">Gründung · CEO</div>
+          <h3 class="traeger-name">Jesús Gómez Rossi</h3>
+          <p class="traeger-loc">Klinischer Zahnarzt, Health-Ökonom, Innovator. Berlin.</p>
+          <p class="traeger-bio">Treibt Produkt­spezifikation, klinische Architektur und Compliance-Gestaltung. Hat die §174a selbst zu oft geschrieben, um zu glauben, dass sie <em>einfach so</em> leichter wird.</p>
+          <a href="https://jesusgomezrossi.com" class="traeger-link" target="_blank" rel="noopener">jesusgomezrossi.com →</a>
+        </article>
+
+        <article class="traeger-card">
+          <div class="traeger-portrait">
+            <div class="placeholder">CW</div>
+            <div class="caption">Portrait · zu liefern</div>
+          </div>
+          <div class="traeger-role">Operations · KI-Promptdesign</div>
+          <h3 class="traeger-name">Corinna Weigert</h3>
+          <p class="traeger-loc">Praxis-Workflow, Verwaltung, Vordruck-Templates. Berlin.</p>
+          <p class="traeger-bio">Verbindung zwischen klinischer Realität und Produkt­logik. Entwickelt Vordruck-Templates und Audit-Workflows in enger Zusammenarbeit mit den Pilot­praxen.</p>
+        </article>
+
+        <article class="traeger-card">
+          <div class="traeger-portrait" style="background: var(--abyss);">
+            <svg viewBox="0 0 240 240" style="position:absolute; inset:20%;" aria-hidden="true">
+              <circle cx="120" cy="120" r="92" fill="none" stroke="rgba(244,239,230,0.2)" stroke-width="0.5"/>
+              <text x="120" y="148" text-anchor="middle" font-family="Instrument Serif, serif" font-size="84" fill="rgba(244,239,230,0.4)">SMA</text>
+            </svg>
+            <div class="caption" style="color: rgba(244,239,230,0.5);">Hersteller · SwissMedAI</div>
+          </div>
+          <div class="traeger-role">Hersteller</div>
+          <h3 class="traeger-name">SwissMedAI GmbH</h3>
+          <p class="traeger-loc">Berlin · Zürich.</p>
+          <p class="traeger-bio">Schweizer Plattform für regulierte medizinische KI. Daten­residenz Schweiz und EU. Aranthir ist das erste Produkt — weitere klinische Module folgen.</p>
+          <a href="https://swissmed.ai" class="traeger-link" target="_blank" rel="noopener">swissmed.ai →</a>
+        </article>
+      </div>
+
+      <div class="pilot-footnote">
+        Pilotbetrieb · 2026 · Praxis Dr. Feld · Berlin · und Praxis Dr. Hess · München · Internal Testing über Google Play
+      </div>
+
+      <div class="section-sig">
+        <span>§ IV · Träger · Aranthir · Edition 2026</span>
+        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       § V · BEDENKEN (FAQ — glass material)
+  ============================================================ -->
+  <section id="bedenken" class="chapter">
+    <div class="container">
+      <div class="chapter-head">
+        <div class="chapter-mark">§ V</div>
+        <div class="chapter-label">Bedenken</div>
+        <h2 class="chapter-title">Sieben Fragen, <span class="italic">die wir vorher klären.</span></h2>
+      </div>
+      <p class="chapter-lede">Bevor das Telefonat beginnt, beantworten wir die Fragen, die wir am häufigsten in den ersten zehn Minuten hören. <em>Wenn Ihre Frage nicht dabei ist, schreiben Sie uns.</em></p>
+
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">01 · Verantwortung</span>
+            <span class="faq-question"><span class="faq-id-mobile">01 · VERANTWORTUNG</span>"KI macht Fehler — meine Verantwortung als Zahnarzt bleibt."</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Genau deshalb durchläuft <strong>jeder Eintrag eine Behandler-Review-und-Sign-Stufe vor dem Siegeln.</strong> Die KI schlägt vor, Sie entscheiden. Das Audit-Log dokumentiert beide Versionen — was die KI vorgeschlagen hat <em>und</em> was Sie signiert haben. Nichts wird in Ihrem Namen abgesendet, was Sie nicht gelesen haben. Sie haben die Kontrolle, das Audit beweist es.
+            </div>
           </div>
         </div>
 
-        <!-- Phone mockup -->
-        <div>
-          <div class="phone-frame">
-            <div class="phone-screen">
-              <div class="phone-notch"></div>
-              <div class="phone-statusbar">
-                <span>9:42</span>
-                <span style="display:flex;gap:5px;align-items:center;">●●●● 5G ▮</span>
-              </div>
-              <div class="phone-header">
-                <div>
-                  <div style="font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--fog); margin-bottom:2px;">Heim · Sonnenhof Berlin</div>
-                  <div class="phone-header-title">Heute · 6 Patienten</div>
-                </div>
-                <span class="phone-pill">Live</span>
-              </div>
-              <div class="phone-body">
-                <div class="phone-card active">
-                  <div class="phone-card-row">
-                    <div>
-                      <div class="phone-card-name">Anna B., 84</div>
-                      <div class="phone-card-meta">Zimmer 207 · PA-Recall fällig</div>
-                    </div>
-                    <div class="phone-status-dot amber"></div>
-                  </div>
-                </div>
-                <div class="phone-card">
-                  <div class="phone-card-row">
-                    <div>
-                      <div class="phone-card-name">Klaus M., 79</div>
-                      <div class="phone-card-meta">Zimmer 312 · Eingliederung ZE</div>
-                    </div>
-                    <div class="phone-status-dot green"></div>
-                  </div>
-                </div>
-                <div class="phone-card">
-                  <div class="phone-card-row">
-                    <div>
-                      <div class="phone-card-name">Edith W., 91</div>
-                      <div class="phone-card-meta">Zimmer 104 · Befund 174a</div>
-                    </div>
-                    <div class="phone-status-dot crimson"></div>
-                  </div>
-                </div>
-                <div class="phone-recording">
-                  <div class="phone-rec-pulse"></div>
-                  <div style="flex:1;">
-                    <div class="phone-rec-label">KI-Diktat aktiv</div>
-                    <div style="font-size:13px; margin-top:1px; color:rgba(255,255,255,0.92);">"Sondierungstiefe 16 mesial, 4 mm…"</div>
-                  </div>
-                  <div class="phone-rec-time">02:14</div>
-                </div>
-              </div>
-              <div class="phone-bottom-bar">
-                <div class="phone-tab active"><div class="phone-tab-dot"></div>Heim</div>
-                <div class="phone-tab"><div class="phone-tab-dot"></div>Patient</div>
-                <div class="phone-tab"><div class="phone-tab-dot"></div>Lab</div>
-                <div class="phone-tab"><div class="phone-tab-dot"></div>Mehr</div>
-              </div>
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">02 · Datenschutz</span>
+            <span class="faq-question"><span class="faq-id-mobile">02 · DATENSCHUTZ</span>"DSGVO-Risiko mit Patienten-Audio?"</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Das Audio bleibt am Gerät, bis Sie freigeben. Nach Transkription wird es verworfen — <strong>kein Patienten-Audio im Cloud-Speicher, kein Audio im KI-Training.</strong> Daten liegen in Frankfurt (Neon Postgres + AWS S3 eu-central-1), AES-256 at-rest, TLS 1.2+ in-transit. Mit allen Auftrags­verarbeitern liegen AVVs vor. Patienten­anfragen über das Patientenrechtegesetz sind über ein FHIR R4-Schema von Tag eins technisch möglich.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">03 · Vendor-Lock-in</span>
+            <span class="faq-question"><span class="faq-id-mobile">03 · VENDOR-LOCK-IN</span>"Was, wenn ich Aranthir verlasse — bleibt meine Akte verfügbar?"</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <strong>Ihre Akte gehört Ihrer Praxis, nicht uns.</strong> PDF-Export gesiegelter §174a-Einträge ist Standard­funktion — kein Premium-Tier, kein Export-Bezahlpfad. FHIR R4-Export für ePA und CGM myTI ist in Vorbereitung. Aranthir ist gegen Lock-in architektiert: wenn Sie gehen, gehen die Daten mit. <em>Wir möchten, dass Sie bleiben, weil das Werkzeug für Sie funktioniert — nicht, weil der Ausgang versperrt ist.</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">04 · Co-Existenz</span>
+            <span class="faq-question"><span class="faq-id-mobile">04 · CO-EXISTENZ</span>"Wir benutzen DAMPSOFT/CHARLY — wir brauchen kein zweites System."</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Aranthir ersetzt DAMPSOFT, CHARLY oder Z1 nicht für die in-Praxis-Behandlung — diese Werkzeuge bleiben Ihre Praxis-EHR. Aranthir ist <strong>das spezialisierte Werkzeug für die Heim-Tour</strong>, dort, wo die in-Praxis-Software nicht hingeht. Die gesiegelten §174a-Einträge werden als PDF an die Krankenkasse exportiert — genauso wie aus Ihrer Praxis-Software, nur ohne den Weg über Ihren Abend-Schreibtisch. <em>Co-Existenz, nicht Konkurrenz.</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">05 · Adoption</span>
+            <span class="faq-question"><span class="faq-id-mobile">05 · ADOPTION</span>"Mein Behandler wird das nicht annehmen — eine neue App ist eine Bürde."</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <strong>Die größere Bürde ist die §174a am Abend.</strong> Aranthir verschiebt die Anstrengung — von der Akten­arbeit nach Hause hin zu fünf Minuten Onboarding einmalig. Im Pilot mit Dr. Feld (Berlin) und Dr. Hess (München) berichten die Behandler von ungefähr ⟨30 Minuten Ersparnis pro Heim-Tag — Pilotzahlen, vor Veröffentlichung zu verifizieren⟩. Wir bieten Heim-Tour-Begleit­schutz für die ersten zwei Wochen.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">06 · Stabilität</span>
+            <span class="faq-question"><span class="faq-id-mobile">06 · STABILITÄT</span>"Pilotbetrieb klingt nach Beta — wir brauchen etwas Stabiles."</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              "Pilotbetrieb" bedeutet, dass wir den Funktionsumfang noch erweitern und auf Praxis-Feedback reagieren. Es bedeutet <strong>nicht</strong>, dass die Compliance-Architektur instabil ist — diese ist von Tag eins production-grade. GoBD-Tamper-Evidence, DSGVO-konforme Verschlüsselung, Audit-Log über alle mutierenden Routen. SOC-2 Type II in Vorbereitung. <em>Die "Beta"-Markierung ist Bescheidenheit — keine Instabilität.</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger" aria-expanded="false">
+            <span class="faq-id-desktop">07 · Preis</span>
+            <span class="faq-question"><span class="faq-id-mobile">07 · PREIS</span>"Was kostet das?"</span>
+            <span class="faq-toggle">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <strong>Aranthir hat keine öffentliche Preisliste — bewusst.</strong> Pricing wird im 30-minütigen Demo-Gespräch mit dem Gründer festgelegt, weil das Praxis-Profil zu unterschiedlich ist, um eine Stange-Sticker fair zu vergeben. Sie zahlen für <em>Ihre</em> Praxis-Realität, nicht für eine durchschnittliche. Wenn nach dem Gespräch klar ist, dass Aranthir nicht der richtige Hebel für Ihre Praxis ist, sagen wir das.
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ===================== Trust bar ===================== -->
-  <div class="trust-bar">
-    <div class="container">
-      <div class="trust-row">
-        <span class="trust-label">Compliance</span>
-        <span class="trust-pill"><svg class="check" width="13" height="13" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> SGB V §174a</span>
-        <span class="trust-pill"><svg class="check" width="13" height="13" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> BEMA §22a</span>
-        <span class="trust-pill"><svg class="check" width="13" height="13" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> DSGVO Art. 9</span>
-        <span class="trust-pill"><svg class="check" width="13" height="13" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> GoBD</span>
-        <span class="trust-pill"><svg class="check" width="13" height="13" viewBox="0 0 16 16"><path d="M3 8l3.5 3.5L13 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> SOC-2 Type II</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== How it works ===================== -->
-  <section id="methode" class="standard">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-cap">Methode</span>
-        <h2>Drei Schritte. <span class="italic">Eine Akte.</span></h2>
-        <p>Sie diktieren bereits. Aranthir entfernt nur den Schritt zwischen Diktat und Vordruck — den, an dem die Genauigkeit sonst verloren geht.</p>
-      </div>
-      <div class="how-grid">
-        <article class="how-card">
-          <div class="how-num">i</div>
-          <h3>Mithören</h3>
-          <p>Whisper-basierte Sprach­transkription mit klinischem Vokabular. Während der Behandlung. Mit Handschuhen. Audio bleibt am Gerät bis zur Freigabe.</p>
-          <div class="how-tags">
-            <span class="how-tag">Whisper</span>
-            <span class="how-tag">DE-klinisch</span>
-            <span class="how-tag">Offline-fähig</span>
-          </div>
-        </article>
-        <article class="how-card">
-          <div class="how-num">ii</div>
-          <h3>Strukturieren</h3>
-          <p>KI-Strukturierung in den passenden deutschen Vordruck. §174a, BEMA §22a, ZE-Pipeline, HKP — alle Felder vorausgefüllt, fehlende sichtbar markiert.</p>
-          <div class="how-tags">
-            <span class="how-tag">§174a</span>
-            <span class="how-tag">BEMA §22a</span>
-            <span class="how-tag">ZE · HKP</span>
-          </div>
-        </article>
-        <article class="how-card">
-          <div class="how-num">iii</div>
-          <h3>Siegeln</h3>
-          <p>Behandler liest gegen, signiert. Eintrag wird gesiegelt — nachträgliche Änderungen versioniert. PDF-Export an die Krankenkasse, fertig.</p>
-          <div class="how-tags">
-            <span class="how-tag">GoBD</span>
-            <span class="how-tag">Audit-Log</span>
-            <span class="how-tag">PDF-Export</span>
-          </div>
-        </article>
+      <div class="section-sig">
+        <span>§ V · Bedenken · Aranthir · Edition 2026</span>
+        <span class="right">Sieben Fragen · sieben Antworten</span>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Features ===================== -->
-  <section id="features" class="standard features">
+  <!-- ============================================================
+       § VI · EINTRETEN — Ink material (the seal moment)
+  ============================================================ -->
+  <section id="eintreten" class="eintreten">
     <div class="container">
-      <div class="section-head">
-        <span class="label-cap">Werkstatt</span>
-        <h2>Jeder deutsche Vordruck. <span class="italic">Vorinstalliert.</span></h2>
-        <p>Aranthir ist kein generisches Praxis-Tool. Vom Sondierungs­raster bis zur Vollprothesen-Anprobe — die ganze aufsuchende Heim-Zahnmedizin im Werkzeugkasten.</p>
+      <div class="eintreten-frame">
+        <div class="eintreten-stamp">§ VI · Eintreten</div>
+        <h2 class="eintreten-h1">Aranthir <span class="italic">testen.</span></h2>
+        <p class="eintreten-italic">Demo-Termine vereinbaren wir persönlich, meist innerhalb einer Woche. Pilot­zugang ist begrenzt auf zahn­ärztliche Heim­versorger in Deutschland.</p>
+        <p class="eintreten-body">Es gibt keinen Self-Service-Signup. Es gibt keine öffentliche Preisliste. Es gibt ein Telefongespräch — <strong>dreißig Minuten</strong> — mit dem Gründer, der selbst Heim­besuche fährt. <em>Aranthir ist nicht für jede Praxis das richtige Werkzeug.</em></p>
+        <div class="eintreten-cta">
+          <a href="mailto:hello@aranthir.com" class="btn btn-on-ink-primary">Demo anfragen.</a>
+          <a href="https://app.aranthir.com" class="btn btn-on-ink-ghost">Bestehender Nutzer · anmelden.</a>
+        </div>
+        <div class="eintreten-whisper">hello@aranthir.com · Antwort werktags innerhalb 24 Stunden.</div>
       </div>
-      <div class="feature-grid">
-        <article class="feature-card">
-          <span class="feature-tag">01</span>
-          <div class="feature-icon blue">A</div>
-          <h3>KI-Diktat</h3>
-          <div class="feature-italic">Sprache zu Akte.</div>
-          <p>Whisper-Sprachmodell mit deutschem klinischem Vokabular. Erkennt Befunde, Behandlungs­schritte, Materialcodes. Roher Transkript bleibt am Gerät.</p>
-        </article>
-        <article class="feature-card">
-          <span class="feature-tag">02</span>
-          <div class="feature-icon emerald">P</div>
-          <h3>PA · §22a</h3>
-          <div class="feature-italic">8-Schritt-Workflow mit Compliance-Gates.</div>
-          <p>Befund → Störfaktoren → Vordruck → ATG → MHU → AIT → BEVa → UPT. Sondierungs­tiefen müssen vollständig sein, bevor ATG freigegeben wird.</p>
-        </article>
-        <article class="feature-card">
-          <span class="feature-tag">03</span>
-          <div class="feature-icon violet">§</div>
-          <h3>§174a Vordruck-Wizard</h3>
-          <div class="feature-italic">13-stufige Akte aus dem Diktat.</div>
-          <p>Diagnose, OPS-Codes, BEMA-Position, Patientenein­willigung. KI füllt vor, Behandler liest gegen. Fehlende Felder sind sichtbar, nicht versteckt.</p>
-        </article>
-        <article class="feature-card">
-          <span class="feature-tag">04</span>
-          <div class="feature-icon amber">Z</div>
-          <h3>ZE-Pipeline</h3>
-          <div class="feature-italic">11 Zustände vom Befund zur Eingliederung.</div>
-          <p>Anzeige · Vordruck 10 · HKP · Labor · Anprobe · Eingliederung. Lab-Kanban hängt synchron daran. Vollprothesen mit 2-Phasen Test-Anprobe.</p>
-        </article>
-        <article class="feature-card">
-          <span class="feature-tag">05</span>
-          <div class="feature-icon crimson">S</div>
-          <h3>Sondierungs­raster</h3>
-          <div class="feature-italic">32 Zähne · 2 Messpunkte · BOP · Mobilität.</div>
-          <p>Das vollständige PA-Blatt, digital. Farb­codiert nach Schweregrad. Wer gemessen hat, mit welchem Wert, an welchem Tag — alles im Audit-Log.</p>
-        </article>
-        <article class="feature-card">
-          <span class="feature-tag">06</span>
-          <div class="feature-icon navy">V</div>
-          <h3>Verwaltung-Dashboard</h3>
-          <div class="feature-italic">Ampel­logik über alle Heime.</div>
-          <p>Sofort · Fristen · Administrativ · Klinisch. Verstöße rot, offene HKPs amber, abrechenbar grün. Praxis-Manager liest Risiken auf einer Etage ab.</p>
-        </article>
+
+      <div class="section-sig on-ink container" style="max-width: 720px; margin-left: auto; margin-right: auto;">
+        <span>§ VI · Eintreten · Aranthir · Edition 2026</span>
+        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
       </div>
     </div>
   </section>
 
-  <!-- ===================== Compliance ===================== -->
-  <section id="compliance" class="compliance-section">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-cap">Kompendium</span>
-        <h2>Vorschrift ist nicht das Ende der Liste — <span class="italic">sie ist die Liste.</span></h2>
-        <p>Aranthir ist <em>für</em> regulierte Heim-Zahnmedizin gebaut, nicht <em>an</em> regulierte Heim-Zahnmedizin angepasst. Sechs Vorschriften sind die Leitplanken.</p>
-      </div>
-      <div class="compliance-grid">
-        <div class="compliance-tile">
-          <div class="compliance-id">SGB V · § 174a</div>
-          <h3>Aufsuchende Versorgung</h3>
-          <p>Vordrucke und Abrechnung integriert. Diagnose, OPS-Code, BEMA-Position, Einwilligung — auto­strukturiert aus dem Diktat.</p>
-        </div>
-        <div class="compliance-tile">
-          <div class="compliance-id">BEMA · § 22a</div>
-          <h3>PA · 8 Schritte</h3>
-          <p>Compliance-Gate auf Schritt 4: Sondierungs­tiefen vollständig vor ATG. Störfaktoren, AIT pro Quadrant, BEVa, UPT.</p>
-        </div>
-        <div class="compliance-tile">
-          <div class="compliance-id">GoBD</div>
-          <h3>Tamper-evident</h3>
-          <p>Eintrag wird nach Signatur gesiegelt. Nachträgliche Änderungen erzeugen einen versionierten Eintrag, alter Stand bleibt sichtbar.</p>
-        </div>
-        <div class="compliance-tile">
-          <div class="compliance-id">DSGVO · Art. 9</div>
-          <h3>Schweizer Datenresidenz</h3>
-          <p>AES-256 at-rest (AWS S3 eu-central-1). TLS 1.2+ in-transit. Postgres in Frankfurt. Diktat-Audio wird nach Transkription verworfen.</p>
-        </div>
-        <div class="compliance-tile">
-          <div class="compliance-id">Patientenrechte­gesetz</div>
-          <h3>Datenzugang</h3>
-          <p>FHIR R4-Schema von Tag eins. Patienten­anfragen über auditierbaren Zugriffs-Workflow. Export nach ePA und CGM myTI in Vorbereitung.</p>
-        </div>
-        <div class="compliance-tile">
-          <div class="compliance-id">SOC-2 · Type II</div>
-          <h3>Mandanten­trennung</h3>
-          <p>Rollen­basierte Guards. <code style="font-family:'DM Mono',monospace; font-size:12px; opacity:0.85;">tenantPrisma</code>-Isolation auf API-Ebene. Audit-Plugin auf allen mutierenden Routen.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== Team ===================== -->
-  <section id="team" class="standard">
-    <div class="container">
-      <div class="section-head">
-        <span class="label-cap">Träger</span>
-        <h2>Gebaut von einem klinischen Team. <span class="italic">In Berlin und Zürich.</span></h2>
-        <p>Aranthir ist das nächste Kapitel der Arbeit, die wir 2024 als Health Ledger begonnen haben. Selber Anspruch, neuer Name.</p>
-      </div>
-      <div class="team-grid">
-        <article class="team-card">
-          <div class="team-portrait">
-            <span class="placeholder-mark">JG</span>
-          </div>
-          <div class="team-info">
-            <div class="team-role">Gründer · CEO</div>
-            <h3 class="team-name">Jesús Gómez Rossi</h3>
-            <div class="team-loc">Klinischer Zahnarzt, Health-Ökonom, Innovator. Berlin.</div>
-            <p class="team-bio">Treibt Produkt, klinische Spezifikation und Compliance-Architektur. Vorherige Arbeit an SwissMedAI MVP. <a href="https://jesusgomezrossi.com" style="color:var(--blue); border-bottom:0.5px solid var(--blue);">jesusgomezrossi.com →</a></p>
-          </div>
-        </article>
-        <article class="team-card">
-          <div class="team-portrait">
-            <span class="placeholder-mark">C</span>
-          </div>
-          <div class="team-info">
-            <div class="team-role">Operations · Process</div>
-            <h3 class="team-name">Conny</h3>
-            <div class="team-loc">Praxis­workflow, Verwaltung, KI-Promptdesign. Berlin.</div>
-            <p class="team-bio">Verbindung zwischen klinischer Realität und Produkt­logik. Entwickelt Vordruck-Templates und Audit-Workflows in Zusammenarbeit mit Pilot­praxen.</p>
-          </div>
-        </article>
-        <article class="team-card">
-          <div class="team-portrait">
-            <span class="placeholder-mark">SA</span>
-          </div>
-          <div class="team-info">
-            <div class="team-role">Hersteller</div>
-            <h3 class="team-name">SwissMedAI GmbH</h3>
-            <div class="team-loc">Schweizer Plattform für regulierte medizinische KI.</div>
-            <p class="team-bio">Berlin · Zürich. Datenresidenz Schweiz und EU. Aranthir ist das erste Produkt — weitere klinische Module folgen. <a href="https://swissmed.ai" style="color:var(--blue); border-bottom:0.5px solid var(--blue);">swissmed.ai →</a></p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== Final CTA ===================== -->
-  <section id="contact" class="final-cta">
-    <div class="container">
-      <div class="final-cta-card">
-        <h2>Aranthir <span class="italic">testen.</span></h2>
-        <p>Pilotzugang ist begrenzt auf zahnärztliche Heim­versorger in Deutschland. Demo-Termine vereinbaren wir persönlich, meist innerhalb einer Woche.</p>
-        <div class="final-cta-row">
-          <a href="mailto:hello@aranthir.com" class="btn btn-on-dark-primary">Demo anfragen <span>→</span></a>
-          <a href="https://app.aranthir.com" class="btn btn-on-dark-ghost">Bestehender Nutzer · Anmelden</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== Footer ===================== -->
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
   <footer>
     <div class="container">
+      <p class="footer-strap">Die Akte, <span class="italic">die sich selbst führt.</span></p>
       <div class="footer-grid">
-        <div class="footer-brand-block">
-          <a href="#" class="brand">
-            <svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true">
-              <rect width="512" height="512" rx="96" fill="#0A2E9E"/>
-              <text x="256" y="338" text-anchor="middle" font-family="Instrument Serif, serif" font-size="300" fill="#FFFFFF">A</text>
-              <circle cx="256" cy="435" r="12" fill="#0FA37F"/>
-            </svg>
-            <span class="brand-name">Aranthir</span>
-          </a>
-          <p>Die Akte, die sich selbst führt. Klinische Dokumentation für aufsuchende Heim-Zahnmedizin.</p>
-        </div>
         <div class="footer-col">
           <h4>Produkt</h4>
           <ul>
             <li><a href="#methode">Methode</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#compliance">Compliance</a></li>
-            <li><a href="https://app.aranthir.com">Anmelden</a></li>
+            <li><a href="#werkstatt">Werkstatt</a></li>
+            <li><a href="#kompendium">Kompendium</a></li>
+            <li><a href="#bedenken">Bedenken</a></li>
+            <li><a href="https://app.aranthir.com">Anmelden →</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Hersteller</h4>
           <ul>
-            <li><a href="https://swissmed.ai">SwissMedAI</a></li>
+            <li><a href="https://swissmed.ai">SwissMedAI GmbH</a></li>
             <li><a href="https://jesusgomezrossi.com">Gründer</a></li>
             <li><a href="mailto:hello@aranthir.com">Kontakt</a></li>
-            <li><a href="#contact">Demo anfragen</a></li>
+            <li><a href="#eintreten">Pilot-Bewerbung</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Rechtliches</h4>
           <ul>
             <li><a href="#">Impressum</a></li>
-            <li><a href="#">Datenschutz</a></li>
-            <li><a href="#">AGB</a></li>
-            <li><a href="#">AVV</a></li>
+            <li><a href="#">Datenschutz · DSGVO</a></li>
+            <li><a href="#">AVV-Vorlagen</a></li>
+            <li><a href="#">HWG-Hinweise</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Sprache</h4>
+          <ul>
+            <li><a href="#" style="color: var(--abyss); border-bottom: 1px solid var(--abyss); padding-bottom: 1px;">Deutsch (DE)</a></li>
+            <li><a href="/en/">English (EN)</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>SwissMedAI GmbH · Berlin · Zürich · v0.1.0</span>
-        <span>DE · <span style="opacity:0.5;">EN</span></span>
+        <span>SwissMedAI GmbH · Berlin · Zürich · Edition 2026 · v 0.1.0</span>
+        <span>Hergestellt in der Schweiz · Geschrieben für Deutschland</span>
       </div>
     </div>
   </footer>
 
   <script>
-    // Reveal-on-scroll
+    /* FAQ accordion — minimal, no flashy animation */
+    document.querySelectorAll('.faq-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', !isOpen);
+      });
+    });
+
+    /* Subtle scroll-triggered reveal */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('in');
       });
     }, { threshold: 0.08 });
-    document.querySelectorAll('section.standard, .compliance-section, .final-cta-card').forEach(el => {
+    document.querySelectorAll('.chapter, .eintreten').forEach(el => {
       el.classList.add('reveal');
       observer.observe(el);
     });
