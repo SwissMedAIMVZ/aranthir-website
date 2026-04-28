@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="0; url=https://app.aranthir.com/login">
+  <link rel="canonical" href="https://app.aranthir.com/login">
+  <title>Anmelden — Aranthir</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230A2E9E'/%3E%3Ctext x='256' y='338' text-anchor='middle' font-family='Instrument Serif,serif' font-size='300' fill='%23FFFFFF'%3EA%3C/text%3E%3Ccircle cx='256' cy='435' r='12' fill='%230FA37F'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Instrument+Serif&family=DM+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      background: #FAFAF7;
+      color: #1B1B1A;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 480px;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .icon { width: 56px; height: 56px; margin: 0 auto 28px; display: block; }
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: 44px;
+      letter-spacing: -0.025em;
+      color: #061F6E;
+      margin: 0 0 12px;
+      line-height: 1.05;
+    }
+    .lede {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: #4A4A47;
+      margin: 0 0 28px;
+    }
+    .stamp {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #0FA37F;
+      margin-bottom: 32px;
+    }
+    .pulse {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #0FA37F;
+      margin-right: 8px;
+      vertical-align: middle;
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .fallback {
+      font-size: 14px;
+      color: #4A4A47;
+      margin: 0;
+      line-height: 1.55;
+    }
+    .fallback a {
+      color: #2D5BF5;
+      border-bottom: 0.5px solid currentColor;
+      text-decoration: none;
+      padding-bottom: 1px;
+    }
+    .fallback a:hover { color: #0A2E9E; }
+    .signature {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8A8782;
+      margin-top: 56px;
+    }
+  </style>
+
+  <script>
+    // Belt-and-suspenders: try JS replace first; meta-refresh is the fallback.
+    window.location.replace('https://app.aranthir.com/login');
+  </script>
+</head>
+<body>
+  <main class="container">
+    <svg class="icon" viewBox="0 0 512 512" aria-hidden="true">
+      <rect width="512" height="512" rx="96" fill="#061F6E"/>
+      <text x="256" y="338" text-anchor="middle" font-family="Instrument Serif, serif" font-size="300" fill="#F4EFE6">A</text>
+      <circle cx="256" cy="435" r="12" fill="#0FA37F"/>
+    </svg>
+
+    <div class="stamp"><span class="pulse"></span>Weiterleitung</div>
+
+    <h1>Anmelden</h1>
+    <p class="lede">Sie werden zur Aranthir-App weitergeleitet…</p>
+
+    <p class="fallback">
+      Falls Ihr Browser nicht automatisch weiterleitet, klicken Sie hier:<br>
+      <a href="https://app.aranthir.com/login">app.aranthir.com/login</a>
+    </p>
+
+    <div class="signature">SwissMedAI GmbH · Berlin · Zürich</div>
+  </main>
+</body>
+</html>
