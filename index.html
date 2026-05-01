@@ -1,1763 +1,1765 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aranthir — Klinische Akte für aufsuchende Heim-Zahnmedizin</title>
-  <meta name="description" content="Aranthir gibt Heimbewohnern die Akte, die sie nicht selbst führen können. §174a, BEMA §22a, ZE-Pipeline. Schweizer Datenresidenz.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aranthir — Die Akte, die sie nicht selbst führen können.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@300..600&family=Inter+Tight:wght@300;400;500;600&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#eef0f5;
+    --bg-2:#e4e7ef;
+    --bg-3:#dadde7;
+    --surface:rgba(255,255,255,0.55);
+    --surface-hi:rgba(255,255,255,0.75);
+    --surface-glass:rgba(255,255,255,0.55);
+    --ink:#0b1224;
+    --ink-2:#283049;
+    --ink-3:#4f5872;
+    --paper:#eef0f5;
+    --paper-2:#e4e7ef;
+    --paper-3:#dadde7;
+    --line:rgba(11,18,36,0.10);
+    --line-2:rgba(11,18,36,0.18);
+    --line-strong:rgba(11,18,36,0.28);
+    --muted:#5d6788;
+    --muted-2:#3b4360;
+    --hero:#eef0f5;
+    --hero-2:#e4e7ef;
+    --accent:#3d6cff;
+    --accent-2:#1f4ad9;
+    --accent-hi:#5b8dff;
+    --accent-deep:#1a36a8;
+    --glow:rgba(61,108,255,0.40);
+    --glow-soft:rgba(61,108,255,0.18);
+    --signal:#3d6cff;
+    --display:'Geist','Inter Tight',ui-sans-serif,system-ui,sans-serif;
+    --serif:'Geist','Inter Tight',ui-sans-serif,system-ui,sans-serif;
+    --sans:'Inter Tight','Geist',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink-2);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    font-size:15px;
+    line-height:1.5;
+    letter-spacing:-0.011em;
+    font-feature-settings:"ss01","cv11","tnum";
+    overflow-x:hidden;
+  }
+  /* ───── organic mesh ambient (fixed) ───── */
+  body::before{
+    content:"";position:fixed;inset:-10%;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(40vw 36vw at 12% 18%,rgba(61,108,255,0.32),transparent 62%),
+      radial-gradient(46vw 40vw at 88% 12%,rgba(38,76,200,0.26),transparent 60%),
+      radial-gradient(50vw 50vw at 78% 92%,rgba(110,90,235,0.22),transparent 60%),
+      radial-gradient(38vw 32vw at 4% 84%,rgba(34,68,180,0.30),transparent 60%);
+    filter:blur(28px);
+    animation:drift 32s ease-in-out infinite alternate;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(11,18,36,0.04) 1px,transparent 1px);
+    background-size:3px 3px;opacity:.55;
+  }
+  @keyframes drift{
+    0%   {transform:translate3d(0,0,0) scale(1)}
+    50%  {transform:translate3d(-2%,1%,0) scale(1.04)}
+    100% {transform:translate3d(2%,-1.5%,0) scale(0.98)}
+  }
+  body > *{position:relative;z-index:1}
+  section.chapter{position:relative}
+  .chapter::before{display:none}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  /* ───── Scroll reveal ───── */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal-stagger > *{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal-stagger.in > *{opacity:1;transform:none}
+  .reveal-stagger.in > *:nth-child(1){transition-delay:0ms}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:80ms}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:160ms}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:240ms}
+  .reveal-stagger.in > *:nth-child(5){transition-delay:320ms}
+  .reveal-stagger.in > *:nth-child(6){transition-delay:400ms}
+  .reveal-stagger.in > *:nth-child(7){transition-delay:480ms}
+  @media (prefers-reduced-motion:reduce){
+    .reveal,.reveal-stagger > *{opacity:1;transform:none;transition:none}
+    body::before,.hero::before,.cta-bg{animation:none}
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+  .label{
+    font-family:var(--mono);
+    font-size:10.5px;
+    font-weight:500;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .serif{font-family:var(--display);font-weight:500;letter-spacing:-0.022em}
+  em.it,.it{font-family:var(--display);font-style:italic;font-weight:300;letter-spacing:-0.025em}
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23061F6E'/%3E%3Ctext x='256' y='338' text-anchor='middle' font-family='Instrument Serif,serif' font-size='300' fill='%23F4EFE6'%3EA%3C/text%3E%3Ccircle cx='362' cy='162' r='14' fill='%230FA37F'/%3E%3C/svg%3E">
+  /* ───── Scroll progress + system strip ───── */
+  .scroll-progress{
+    position:fixed;top:0;left:0;height:2px;width:0;
+    background:var(--accent);z-index:99;
+    transition:width .05s linear;
+  }
+  .sysbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--surface-glass);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    color:var(--ink-3);
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:0.18em;
+    text-transform:uppercase;
+  }
+  .sysbar-inner{
+    display:grid;grid-template-columns:1fr auto 1fr;gap:16px;
+    padding:9px 32px;max-width:1320px;margin:0 auto;align-items:center;
+  }
+  .sysbar .left{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .sysbar .right{display:flex;gap:18px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+  .sysbar .sig{
+    color:var(--ink);display:inline-flex;align-items:center;gap:8px;
+  }
+  .sysbar .sig::before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 0 4px rgba(61,108,255,0.18),0 0 12px var(--glow);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .sysbar .div{opacity:.4}
 
-  <style>
-    /* =============================================================
-       ARANTHIR · v5 (Ledger Religion)
-       Built against Health Ledger Design Spec v2 (Approved 2026-04-19)
-       Three pillars: QUIET · PRECISE · ARCHIVAL
-       Adjective test: "inevitable" is the highest compliment.
-    ============================================================= */
+  /* ───── Top bar ───── */
+  .topbar{
+    background:transparent;
+    color:var(--ink);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  .topbar-inner{
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:22px 32px;max-width:1320px;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:500;font-size:20px;letter-spacing:-0.025em;color:var(--ink)}
+  .brand-mark{
+    width:24px;height:24px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#a8c0ff 0%,var(--accent) 45%,#1a3aa8 100%);
+    box-shadow:0 0 0 1px rgba(255,255,255,0.18) inset, 0 0 24px var(--glow);
+    position:relative;
+  }
+  .nav{display:flex;align-items:center;gap:26px;justify-self:center}
+  .nav a{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--muted);transition:color .2s;
+  }
+  .nav a:hover{color:var(--ink);text-shadow:0 0 8px var(--glow-soft)}
+  .nav-cta{justify-self:end}
+  .nav .pill{
+    color:var(--ink);background:var(--surface);padding:11px 18px;border-radius:999px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.18em;
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--line-2);transition:all .25s;
+    backdrop-filter:blur(10px);
+  }
+  .nav .pill:hover{
+    background:var(--accent);border-color:var(--accent);color:#fff;
+    box-shadow:0 0 0 6px var(--glow-soft),0 0 32px var(--glow);
+  }
 
-    /* ====== Tokens ====== */
-    :root {
-      /* The ground (paper) */
-      --bone:       #F4EFE6;   /* the page. warm, archival. */
-      --parchment:  #EAE3D3;   /* the panel. one step deeper. */
-      --cream:      #FAF6EE;   /* the lift. surfaces that float. */
+  /* ───── Hero ───── */
+  .hero{
+    position:relative;
+    background:transparent;
+    color:var(--ink);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:-20%;pointer-events:none;
+    background:
+      radial-gradient(40% 40% at 70% 30%,rgba(61,108,255,0.55),transparent 60%),
+      radial-gradient(36% 36% at 18% 80%,rgba(40,80,220,0.45),transparent 60%),
+      radial-gradient(28% 28% at 50% 60%,rgba(120,90,235,0.30),transparent 60%);
+    filter:blur(50px);
+    animation:drift 28s ease-in-out infinite alternate;
+  }
+  /* extra glow that tracks the scene cycle — left → right pan */
+  .hero-pan{
+    position:absolute;top:30%;width:34%;height:60%;pointer-events:none;
+    background:radial-gradient(60% 60% at 50% 50%,rgba(61,108,255,0.45),transparent 70%);
+    filter:blur(60px);
+    animation:hero-pan 15s ease-in-out infinite;
+  }
+  @keyframes hero-pan{
+    0%   {left:5%;opacity:.85}
+    33%  {left:30%;opacity:.95}
+    66%  {left:62%;opacity:.85}
+    100% {left:5%;opacity:.85}
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.45;
+    background-image:
+      linear-gradient(to right,rgba(11,18,36,0.05) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(11,18,36,0.04) 1px,transparent 1px);
+    background-size:80px 80px;
+  }
+  .hero-inner{
+    position:relative;z-index:1;
+    max-width:1320px;margin:0 auto;padding:140px 32px 110px;
+    display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:start;
+  }
+  .hero-text{min-width:0;max-width:760px}
+  @media (max-width:1080px){
+    .hero-inner{grid-template-columns:1fr}
+    .phone-wrap{justify-self:center;margin-top:48px}
+    .phone{transform:rotate(0deg)}
+  }
+  .hero-tag,.hero-tag-r,.cta-tag,.cta-tag-r{
+    position:absolute;top:36px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .hero-tag,.cta-tag{left:32px}
+  .hero-tag-r,.cta-tag-r{right:32px}
+  .hero-eyebrow{
+    color:var(--ink-3);margin-bottom:48px;
+    display:inline-flex;align-items:center;gap:12px;
+    padding:10px 16px;border:1px solid var(--line-2);border-radius:999px;
+    background:var(--surface);backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  .hero-eyebrow .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 4px rgba(61,108,255,0.18),0 0 12px var(--glow);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  .hero-eyebrow .roll{
+    position:relative;height:13px;width:340px;overflow:hidden;
+  }
+  .hero-eyebrow .roll span{
+    position:absolute;inset:0;opacity:0;
+    animation:roll-cycle 15s ease-in-out infinite;
+  }
+  .hero-eyebrow .roll span:nth-child(1){animation-delay:0s}
+  .hero-eyebrow .roll span:nth-child(2){animation-delay:-10s}
+  .hero-eyebrow .roll span:nth-child(3){animation-delay:-5s}
+  @keyframes roll-cycle{
+    0%, 1%      {opacity:0;transform:translateY(8px)}
+    4%, 30%     {opacity:1;transform:translateY(0)}
+    33%, 100%   {opacity:0;transform:translateY(-8px)}
+  }
+  .hero h1{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(48px,5.6vw,104px);
+    line-height:0.94;
+    letter-spacing:-0.048em;
+    color:var(--ink);
+    max-width:14ch;
+  }
+  @media (max-width:1080px){
+    .hero h1{font-size:clamp(54px,9vw,128px)}
+  }
+  .hero h1 .it{
+    font-style:italic;
+    font-weight:300;
+    background:linear-gradient(120deg,#3d6cff 0%,#1f4ad9 25%,#5e3acf 50%,#1f4ad9 75%,#3d6cff 100%);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    letter-spacing:-0.042em;
+    animation:gradient-shift 15s ease-in-out infinite;
+  }
+  @keyframes gradient-shift{
+    0%, 100% {background-position:0% 50%}
+    50%      {background-position:100% 50%}
+  }
+  .hero-lede{
+    margin-top:56px;max-width:52ch;font-size:17px;line-height:1.55;
+    color:var(--ink-2);font-weight:300;
+  }
+  .hero-lede strong{color:var(--ink);font-weight:500}
+  .hero-lede .hl{
+    font-style:normal;font-weight:500;
+    color:var(--ink);
+    animation:hl-cycle 15s ease-in-out infinite;
+    transition:none;
+    border-radius:3px;padding:0 2px;
+  }
+  .hero-lede .hl-1{animation-delay:0s}
+  .hero-lede .hl-2{animation-delay:-10s}
+  .hero-lede .hl-3{animation-delay:-5s}
+  @keyframes hl-cycle{
+    0%, 1%   {color:var(--ink);background:transparent;text-shadow:none}
+    4%, 28%  {color:#fff;background:var(--accent);text-shadow:0 0 16px var(--glow-soft)}
+    31%, 100%{color:var(--ink);background:transparent;text-shadow:none}
+  }
+  .hero-cta{
+    margin-top:52px;display:flex;gap:12px;flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--mono);font-size:11px;letter-spacing:0.20em;
+    text-transform:uppercase;padding:16px 24px;border-radius:999px;
+    border:1px solid transparent;cursor:pointer;transition:all .25s ease;
+    display:inline-flex;align-items:center;gap:12px;
+    font-weight:500;backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    position:relative;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent-hi) 0%,var(--accent) 50%,var(--accent-2) 100%);
+    color:#fff;border-color:rgba(255,255,255,0.20);
+    box-shadow:0 0 0 1px var(--glow-soft) inset,0 8px 32px var(--glow-soft),0 0 48px var(--glow-soft);
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 0 0 1px var(--glow) inset,0 12px 40px var(--glow),0 0 64px var(--glow);
+  }
+  .hero-cta .btn-primary{animation:cta-wink 15s ease-in-out infinite}
+  @keyframes cta-wink{
+    0%, 86%, 100% {box-shadow:0 0 0 1px var(--glow-soft) inset,0 8px 32px var(--glow-soft),0 0 48px var(--glow-soft);transform:translateY(0)}
+    91%           {box-shadow:0 0 0 1px var(--glow) inset,0 12px 50px var(--glow),0 0 96px var(--glow);transform:translateY(-1px)}
+    96%           {box-shadow:0 0 0 1px var(--glow-soft) inset,0 8px 32px var(--glow-soft),0 0 48px var(--glow-soft);transform:translateY(0)}
+  }
+  .btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
+  .btn-ghost:hover{border-color:var(--accent);background:rgba(61,108,255,0.10);color:var(--accent-2);box-shadow:0 0 24px var(--glow-soft)}
+  .btn .arrow{transition:transform .25s;font-family:var(--sans);font-style:normal;letter-spacing:0;font-size:14px}
+  .btn:hover .arrow{transform:translateX(4px)}
 
-      /* The ink (instrument) */
-      --abyss:      #061F6E;   /* deepest. wax-seal. hero bg. */
-      --ink:        #0A2E9E;   /* primary. 90% of navy usage. */
-      --ink-2:      #1443C4;   /* hover/active. never a fill on its own. */
-      --ink-3:      #2F5CE0;   /* focus ring on navy surfaces. */
+  .hero-meta{
+    margin-top:120px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    padding:24px;border-radius:24px;
+    background:var(--surface);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    border:1px solid var(--line);
+  }
+  .hero-meta > div{
+    padding:14px 24px;border-right:1px solid var(--line);
+    border-radius:14px;position:relative;
+    animation:meta-spot 15s ease-in-out infinite;
+  }
+  .hero-meta > div:nth-child(1){animation-delay:0s}
+  .hero-meta > div:nth-child(2){animation-delay:-3.75s}
+  .hero-meta > div:nth-child(3){animation-delay:-7.5s}
+  .hero-meta > div:nth-child(4){animation-delay:-11.25s;border-right:0}
+  @keyframes meta-spot{
+    0%, 1%      {background:transparent;box-shadow:none}
+    4%, 22%     {background:rgba(61,108,255,0.10);box-shadow:inset 0 0 0 1px rgba(61,108,255,0.28),0 0 30px var(--glow-soft)}
+    25%, 100%   {background:transparent;box-shadow:none}
+  }
+  .hero-meta .k{color:var(--muted);font-family:var(--mono);font-size:10px;letter-spacing:0.20em;text-transform:uppercase;transition:color .4s}
+  .hero-meta .v{margin-top:10px;font-family:var(--display);font-weight:500;font-size:28px;color:var(--ink);letter-spacing:-0.035em;font-feature-settings:"tnum";transition:color .4s,transform .4s;transform-origin:left center}
 
-      /* The signal (witness — ONE per screen) */
-      --signal:     #0FA37F;   /* the emerald dot. status, "done". */
-      --signal-2:   #14C295;   /* interactive only. */
+  /* ───── Phone frame + scene cycle ───── */
+  .phone-wrap{
+    position:relative;justify-self:end;align-self:start;
+    perspective:1400px;display:flex;flex-direction:column;align-items:flex-end;gap:24px;
+  }
 
-      /* The witness (destructive — used reluctantly) */
-      --ember:      #B54A2B;   /* not red. wax-seal cooled. */
+  /* caption strip */
+  .phone-caption{
+    width:340px;padding:20px 22px;border-radius:20px;
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(22px) saturate(140%);
+    -webkit-backdrop-filter:blur(22px) saturate(140%);
+    position:relative;min-height:124px;overflow:hidden;
+  }
+  .phone-caption .meta{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:12px;
+  }
+  .phone-caption .meta::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(61,108,255,0.18);margin-right:8px;vertical-align:-1px;animation:pulse 2s ease-in-out infinite}
+  .phone-caption .meta .num{color:var(--ink-3)}
+  .phone-caption .body{
+    position:relative;height:64px;
+  }
+  .phone-caption .body article{
+    position:absolute;inset:0;opacity:0;
+    animation:caption-cycle 15s ease-in-out infinite;
+  }
+  .phone-caption .body article:nth-child(1){animation-delay:0s}
+  .phone-caption .body article:nth-child(2){animation-delay:-10s}
+  .phone-caption .body article:nth-child(3){animation-delay:-5s}
+  @keyframes caption-cycle{
+    0%, 1%      {opacity:0;transform:translateY(8px)}
+    4%, 30%     {opacity:1;transform:translateY(0)}
+    33%, 100%   {opacity:0;transform:translateY(-8px)}
+  }
+  .phone-caption h4{
+    font-family:var(--display);font-weight:500;font-size:22px;
+    letter-spacing:-0.035em;line-height:1.05;color:var(--ink);max-width:18ch;
+  }
+  .phone-caption p{
+    margin-top:6px;font-size:13px;line-height:1.45;color:var(--ink-2);opacity:.82;max-width:32ch;
+  }
+  .phone-glow{
+    position:absolute;inset:-30% -20%;pointer-events:none;
+    background:
+      radial-gradient(50% 50% at 50% 50%,rgba(61,108,255,0.35),transparent 60%),
+      radial-gradient(40% 40% at 30% 80%,rgba(120,90,235,0.22),transparent 60%);
+    filter:blur(40px);z-index:-1;
+  }
+  .phone{
+    width:340px;height:712px;border-radius:52px;
+    background:linear-gradient(160deg,#0e1228 0%,#070912 60%,#0a0e22 100%);
+    padding:8px;position:relative;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.10) inset,
+      0 -1px 0 rgba(0,0,0,0.4) inset,
+      0 30px 80px rgba(11,18,36,0.30),
+      0 0 0 1px rgba(11,18,36,0.20),
+      0 0 80px rgba(61,108,255,0.20);
+    transform:rotate(-2deg);
+    transition:transform .6s ease;
+  }
+  .phone:hover{transform:rotate(0deg) translateY(-4px)}
+  .phone-screen{
+    position:relative;width:100%;height:100%;border-radius:44px;
+    background:#f3efe6;overflow:hidden;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.04) inset;
+  }
+  .phone-screen::after{
+    content:"";position:absolute;left:0;right:0;top:-30%;height:30%;
+    background:linear-gradient(180deg,transparent,rgba(91,141,255,0.10),transparent);
+    pointer-events:none;z-index:8;
+    animation:scanline 5s ease-in-out infinite;
+  }
+  @keyframes scanline{
+    0%, 60% {transform:translateY(0)}
+    80%     {transform:translateY(380%)}
+    100%    {transform:translateY(380%);opacity:0}
+  }
+  .phone-notch{
+    position:absolute;top:10px;left:50%;transform:translateX(-50%);
+    width:96px;height:28px;border-radius:20px;background:#000;z-index:5;
+  }
+  .phone-status{
+    position:absolute;top:14px;left:18px;right:18px;z-index:6;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--sans);font-size:12px;font-weight:600;color:#0d0d0f;
+  }
+  .phone-status .right{display:flex;gap:6px;align-items:center;font-size:10px}
+  .phone-home{
+    position:absolute;left:50%;transform:translateX(-50%);
+    bottom:6px;width:128px;height:4px;border-radius:4px;
+    background:rgba(0,0,0,0.4);z-index:5;
+  }
+  .phone-stripe{
+    position:absolute;top:0;left:0;right:0;height:8px;
+    background:linear-gradient(90deg,#9d3a1f 0%,#b6471f 100%);z-index:4;
+  }
 
-      /* Type */
-      --graphite:   #1B1B1A;   /* body on bone. not black. */
-      --slate:      #4A4A47;   /* secondary text. */
-      --fog:        #8A8782;   /* tertiary, captions, metadata. */
-      --hairline:   #D9D3C6;   /* every rule, every border. */
-      --chalk:      #FFFFFF;   /* only for text on ink/abyss. */
+  /* scene scaffolding */
+  .scene{
+    position:absolute;inset:0;padding:42px 18px 28px;
+    background:#f4eede;color:#1a1612;
+    font-family:'Inter Tight',var(--sans);
+    opacity:0;animation:cycle 15s cubic-bezier(.65,.05,.35,1) infinite;
+    will-change:opacity,transform,filter;
+  }
+  .scene-1{animation-delay:0s}
+  .scene-2{animation-delay:-10s}
+  .scene-3{animation-delay:-5s}
+  @keyframes cycle{
+    0%   {opacity:0;transform:translate3d(8%,0,0) scale(1.02);filter:blur(6px)}
+    3%   {opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+    30%  {opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+    33%  {opacity:0;transform:translate3d(-8%,0,0) scale(0.98);filter:blur(6px)}
+    100% {opacity:0;transform:translate3d(-8%,0,0) scale(0.98);filter:blur(6px)}
+  }
+  /* ── Scene 1 — Dashboard ── */
+  .scene-1{padding-top:48px}
+  .s1-head{position:relative;text-align:center;padding:8px 0 14px}
+  .s1-title{font-family:'PT Serif','Source Serif 4',Georgia,serif;font-size:24px;font-weight:700;color:#1a1612}
+  .s1-sub{font-size:12px;color:#6e655a;margin-top:2px}
+  .s1-burger{position:absolute;right:0;top:8px;width:38px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,0.10);display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 9px}
+  .s1-burger span{height:1.5px;background:#1a1612;display:block}
+  .s1-tabs{display:flex;gap:14px;padding:10px 2px 16px;font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:#9b958a;border-bottom:1px solid rgba(0,0,0,0.08)}
+  .s1-tab{position:relative;padding-bottom:10px}
+  .s1-tab.on{color:#1a1612}
+  .s1-tab.on i{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#1eb380}
+  .s1-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .s1-stat{background:#fff;border-radius:14px;padding:14px 12px;position:relative;box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+  .s1-stat-num{font-family:'PT Serif','Source Serif 4',Georgia,serif;font-size:28px;font-weight:700;color:#1a1612;letter-spacing:-0.02em}
+  .s1-stat-pill{position:absolute;top:10px;right:10px;background:#e3f5ec;color:#16a06b;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;letter-spacing:.04em}
+  .s1-stat-lbl{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:0.10em;color:#6e655a;text-transform:uppercase}
+  .s1-stat-lbl i{width:5px;height:5px;border-radius:50%;background:#1eb380}
+  .s1-chart{margin-top:14px;background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+  .s1-chart-title{font-weight:700;font-size:13px;color:#1a1612;margin-bottom:10px}
+  .s1-bars{display:flex;justify-content:space-between;align-items:flex-end;gap:6px;height:104px}
+  .s1-bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+  .s1-bar .lbl{font-size:9px;color:#6e655a;font-weight:600}
+  .s1-bar .bg{flex:1;width:100%;background:#f1ead8;border-radius:6px 6px 4px 4px;position:relative;display:flex;align-items:flex-end;overflow:hidden}
+  .s1-bar .bg i{
+    display:block;width:100%;background:#0a2585;border-radius:6px 6px 4px 4px;
+    position:relative;overflow:hidden;
+  }
+  .s1-bar .bg i::after{
+    content:"";position:absolute;left:-40%;top:0;width:30%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.30),transparent);
+    animation:bar-sweep 3.5s ease-in-out infinite;
+  }
+  .s1-bar:nth-child(2) .bg i::after{animation-delay:.4s}
+  .s1-bar:nth-child(3) .bg i::after{animation-delay:.8s}
+  .s1-bar:nth-child(4) .bg i::after{animation-delay:1.2s}
+  .s1-bar:nth-child(5) .bg i::after{animation-delay:1.6s}
+  @keyframes bar-sweep{
+    0%, 60% {transform:translateX(0)}
+    80%, 100% {transform:translateX(420%)}
+  }
+  .s1-bar .d{font-size:10px;color:#1a1612;font-weight:600;margin-top:2px}
 
-      /* On-ink derivatives */
-      --bone-on-ink:        rgba(244, 239, 230, 1);
-      --bone-on-ink-dim:    rgba(244, 239, 230, 0.78);
-      --bone-on-ink-fade:   rgba(244, 239, 230, 0.55);
-      --bone-on-ink-trace:  rgba(244, 239, 230, 0.32);
-      --hairline-on-ink:    rgba(244, 239, 230, 0.16);
-      --hairline-on-ink-strong: rgba(244, 239, 230, 0.32);
+  /* ── Scene 2 — Heute ── */
+  .scene-2{padding:48px 18px 28px;background:#ebe2cf}
+  .s2-date{font-family:'PT Serif','Source Serif 4',Georgia,serif;font-size:21px;font-weight:700;color:#1a1612;line-height:1.18;max-width:14ch;padding-top:6px}
+  .s2-burger{position:absolute;right:18px;top:54px;width:38px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,0.10);background:#f3edd9;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 9px}
+  .s2-burger span{height:1.5px;background:#1a1612;display:block}
+  .s2-tabs{display:flex;gap:18px;padding:24px 2px 12px;font-size:10.5px;font-weight:700;letter-spacing:0.10em;color:#9b958a;border-bottom:1px solid rgba(0,0,0,0.08)}
+  .s2-tab{position:relative;padding-bottom:8px;text-transform:uppercase}
+  .s2-tab.on{color:#1a1612}
+  .s2-tab.on i{position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#1eb380}
+  .s2-pills{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+  .s2-pill{background:#f4eede;border:1.5px solid #c54a2a;border-radius:24px;padding:11px 14px;display:flex;align-items:center;gap:8px;font-size:13px;color:#c54a2a;font-weight:500}
+  .s2-pill:not(.on){border-color:rgba(0,0,0,0.12);color:#1a1612}
+  .s2-pill i{width:7px;height:7px;border-radius:50%;background:#c54a2a}
+  .s2-pill i.g{background:#1eb380}
+  .s2-pill .b{margin-left:auto;background:#c54a2a;color:#fff;border-radius:999px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .s2-pill .b.g{background:#bbb6a8}
+  .s2-empty{
+    margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:8px;
+    color:#9b958a;font-size:12px;
+  }
+  .s2-section{margin-top:32px;font-size:10.5px;font-weight:700;letter-spacing:0.14em;color:#1a1612;text-transform:uppercase}
+  .s2-list{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+  .s2-row{
+    background:#fff;border-radius:14px;padding:14px 14px;font-size:13px;font-weight:700;color:#1a1612;
+    display:flex;justify-content:space-between;align-items:center;
+    box-shadow:0 1px 0 rgba(0,0,0,0.04);
+  }
+  .s2-row span{color:#0a2585}
+  .s2-fab{
+    position:absolute;right:62px;bottom:120px;
+    width:46px;height:46px;border-radius:50%;background:#0a2585;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;
+    box-shadow:0 6px 16px rgba(10,37,133,0.40);
+    animation:fab-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes fab-pulse{
+    0%, 100% {box-shadow:0 6px 16px rgba(10,37,133,0.40),0 0 0 0 rgba(10,37,133,0.40)}
+    50%      {box-shadow:0 6px 16px rgba(10,37,133,0.40),0 0 0 10px rgba(10,37,133,0)}
+  }
 
-      /* The one shadow */
-      --lift: 0 1px 2px rgba(6,31,110,0.06), 0 8px 24px rgba(6,31,110,0.08);
+  /* ── Scene 3 — Tagesprotokoll ── */
+  .scene-3{padding:48px 16px 28px;background:#e8dfca}
+  .s3-head{display:flex;gap:12px;align-items:flex-start;padding-top:10px}
+  .s3-back{font-size:28px;color:#0a2585;line-height:1;padding-top:2px;font-weight:300}
+  .s3-title{font-family:'PT Serif','Source Serif 4',Georgia,serif;font-size:22px;font-weight:700;color:#1a1612;line-height:1.1}
+  .s3-sub{font-size:11.5px;color:#6e655a;margin-top:2px}
+  .s3-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.08)}
+  .s3-toggle span{padding:11px 0;text-align:center;font-size:13px;font-weight:600;border-radius:24px;color:#1a1612;background:#f4eede;border:1px solid rgba(0,0,0,0.06)}
+  .s3-toggle .on{background:#0a2585;color:#fff;border-color:#0a2585}
+  .s3-step{display:flex;justify-content:center;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+  .s3-step .b{width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.05);display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:#1a1612}
+  .s3-step .d{font-family:'Geist Mono',ui-monospace,monospace;font-size:14px;letter-spacing:0.06em;color:#1a1612}
+  .s3-stats{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:14px;margin-top:14px;padding:18px 0;text-align:center;box-shadow:0 1px 0 rgba(0,0,0,0.04)}
+  .s3-stats .n{font-family:'PT Serif','Source Serif 4',Georgia,serif;font-size:28px;font-weight:700;color:#1a1612}
+  .s3-stats .l{font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#6e655a;text-transform:uppercase;margin-top:2px}
+  .s3-card{margin-top:10px;background:#fff;border-radius:14px;padding:0;box-shadow:0 1px 0 rgba(0,0,0,0.04);overflow:hidden}
+  .s3-doc{padding:12px 14px;font-size:13.5px;font-weight:600;color:#0a2585;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.06)}
+  .s3-doc span{background:rgba(0,0,0,0.05);color:#6e655a;border-radius:999px;padding:2px 9px;font-size:10.5px;font-weight:600}
+  .s3-entry{display:grid;grid-template-columns:60px 1fr;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(0,0,0,0.05)}
+  .s3-entry:last-child{border-bottom:0}
+  .s3-entry .t{font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;color:#1a1612;font-weight:500;letter-spacing:0.04em}
+  .s3-entry .p{font-size:13px;font-weight:600;color:#1a1612}
+  .s3-entry .m{font-size:11px;color:#6e655a;margin-top:2px}
+  .s3-btn{
+    margin-top:14px;background:#0a2585;color:#fff;text-align:center;
+    padding:13px;border-radius:12px;font-size:13px;font-weight:600;letter-spacing:0.02em;
+    box-shadow:0 6px 16px rgba(10,37,133,0.40);
+    animation:btn-glow 2.6s ease-in-out infinite;
+  }
+  @keyframes btn-glow{
+    0%, 100% {box-shadow:0 6px 16px rgba(10,37,133,0.40),0 0 0 0 rgba(10,37,133,0.40)}
+    50%      {box-shadow:0 6px 16px rgba(10,37,133,0.40),0 0 0 8px rgba(10,37,133,0)}
+  }
 
-      /* The two curves */
-      --ease-standard:   cubic-bezier(0.32, 0.72, 0, 1);
-      --ease-ceremonial: cubic-bezier(0.22, 1, 0.36, 1);
+  /* scrubber + scene label */
+  .phone-scrub{
+    position:absolute;left:24px;right:24px;bottom:22px;z-index:7;
+    display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  }
+  .phone-scrub .meta{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:8.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:#1a1612;font-weight:600;
+  }
+  .phone-scrub .meta .l{
+    position:relative;height:11px;flex:1;overflow:hidden;
+  }
+  .phone-scrub .meta .l span{
+    position:absolute;inset:0;opacity:0;
+    animation:label-cycle 15s ease-in-out infinite;
+  }
+  .phone-scrub .meta .l span:nth-child(1){animation-delay:0s}
+  .phone-scrub .meta .l span:nth-child(2){animation-delay:-10s}
+  .phone-scrub .meta .l span:nth-child(3){animation-delay:-5s}
+  @keyframes label-cycle{
+    0%, 1%      {opacity:0;transform:translateY(4px)}
+    4%, 30%     {opacity:1;transform:translateY(0)}
+    33%, 100%   {opacity:0;transform:translateY(-4px)}
+  }
+  .phone-scrub .idx{color:#6e655a}
+  .phone-scrub .track{display:flex;gap:4px}
+  .phone-scrub .track span{
+    flex:1;height:2px;border-radius:2px;background:rgba(0,0,0,0.16);
+    overflow:hidden;position:relative;
+  }
+  .phone-scrub .track span::after{
+    content:"";position:absolute;inset:0;background:var(--accent);
+    transform-origin:left;transform:scaleX(0);
+    animation:fill 15s linear infinite;
+  }
+  .phone-scrub .track span:nth-child(1)::after{animation-delay:0s}
+  .phone-scrub .track span:nth-child(2)::after{animation-delay:-10s}
+  .phone-scrub .track span:nth-child(3)::after{animation-delay:-5s}
+  @keyframes fill{
+    0%             {transform:scaleX(0)}
+    33%            {transform:scaleX(1)}
+    33.01%, 100%   {transform:scaleX(0)}
+  }
 
-      /* Space (4-point grid) */
-      --xs: 4px; --sm: 8px; --md: 12px; --lg: 16px; --xl: 24px; --xxl: 40px; --xxxl: 64px; --hero: 96px;
-    }
+  /* LIVE badge */
+  .phone-live{
+    position:absolute;top:54px;right:18px;z-index:6;
+    display:inline-flex;align-items:center;gap:5px;
+    background:rgba(197,74,42,0.10);border:1px solid rgba(197,74,42,0.25);
+    color:#c54a2a;font-family:var(--mono);font-size:8.5px;
+    font-weight:600;letter-spacing:0.22em;padding:3px 7px 3px 6px;
+    border-radius:999px;text-transform:uppercase;
+  }
+  .phone-live::before{
+    content:"";width:5px;height:5px;border-radius:50%;background:#c54a2a;
+    box-shadow:0 0 0 0 rgba(197,74,42,0.40);
+    animation:live-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes live-pulse{
+    0%, 100% {box-shadow:0 0 0 0 rgba(197,74,42,0.55)}
+    50%      {box-shadow:0 0 0 6px rgba(197,74,42,0.0)}
+  }
 
-    /* ====== Reset ====== */
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bone);
-      color: var(--graphite);
-      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 16px;
-      line-height: 1.45;
-      font-weight: 450;
-      font-variant-numeric: tabular-nums;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    a { color: inherit; text-decoration: none; }
-    img, svg { display: block; max-width: 100%; }
-    button { background: none; border: none; color: inherit; cursor: pointer; padding: 0; font: inherit; }
+  /* hero giant ghost wordmark */
+  .hero-ghost{
+    position:absolute;left:-3%;bottom:-12%;
+    font-family:var(--display);font-weight:300;font-style:italic;font-size:24vw;line-height:1;
+    color:rgba(11,18,36,0.05);letter-spacing:-0.06em;
+    pointer-events:none;user-select:none;z-index:0;
+  }
 
-    /* ====== Material: Paper (the ground) ======
-       2% noise overlay applied via SVG turbulence, layered fixed. */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.4;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.024 0 0 0 0 0.122 0 0 0 0 0.431 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
+  .hero-line{display:none}
 
-    /* ====== Layout container ====== */
-    .container {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 0 var(--xxxl);
-      width: 100%;
-      position: relative;
-      z-index: 2;
-    }
-    @media (max-width: 760px) { .container { padding: 0 var(--xl); } }
+  /* ───── Section frame ───── */
+  section.chapter{padding:140px 0 120px;border-top:1px solid var(--line);position:relative;overflow:hidden}
+  section.chapter:first-of-type{border-top:0}
+  .chapter-marker{
+    position:absolute;left:32px;top:24px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .chapter-marker-r{
+    position:absolute;right:32px;top:24px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .chapter-head{
+    display:grid;grid-template-columns:1fr;gap:24px;
+    align-items:end;margin-bottom:88px;position:relative;
+    padding-bottom:32px;border-bottom:1px solid var(--line);
+  }
+  .chapter-num{
+    font-family:var(--display);font-weight:300;font-style:italic;
+    font-size:clamp(120px,18vw,260px);
+    background:linear-gradient(180deg,#3d6cff 0%,#1f4ad9 55%,#0e1f7a 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    line-height:0.82;letter-spacing:-0.07em;
+    margin-left:-12px;
+  }
+  .chapter-title{
+    font-family:var(--display);font-weight:500;
+    font-size:clamp(34px,5vw,72px);
+    line-height:0.98;letter-spacing:-0.045em;
+    max-width:24ch;color:var(--ink);
+  }
+  .chapter-title .it{
+    background:linear-gradient(120deg,#3d6cff 0%,#1f4ad9 60%,#5e3acf 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    font-weight:300;letter-spacing:-0.038em;
+  }
+  .chapter-meta{
+    position:absolute;right:0;bottom:32px;text-align:right;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .chapter-meta .v{
+    display:block;color:var(--ink);font-family:var(--display);font-weight:500;
+    font-size:18px;letter-spacing:-0.025em;text-transform:none;margin-top:4px;
+  }
 
-    /* ====== Type scale (the religion: 5 sizes only) ====== */
-    .t1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 48px; line-height: 1.05; letter-spacing: -0.02em; color: var(--graphite); }
-    .t2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 28px; line-height: 1.15; letter-spacing: -0.01em; color: var(--graphite); }
-    .t3 { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 20px; line-height: 1.35; color: var(--graphite); }
-    .t4 { font-family: 'Inter Tight', sans-serif; font-weight: 450; font-size: 16px; line-height: 1.45; color: var(--graphite); }
-    .t5 { font-family: 'Inter Tight', sans-serif; font-weight: 500; font-size: 13px; line-height: 1.25; color: var(--slate); }
-    .t5-mono { font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 13px; line-height: 1.25; color: var(--fog); }
-    .t5-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      font-size: 11px;
-      line-height: 1.2;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--fog);
-    }
-    @media (min-width: 760px) {
-      .t1 { font-size: clamp(48px, 5.6vw, 76px); }
-    }
+  /* ───── Section I — three columns (glass) ───── */
+  .triptych{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .col{
+    position:relative;padding:32px 28px 28px;border-radius:24px;
+    min-height:340px;display:flex;flex-direction:column;
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(24px) saturate(140%);
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+    transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+    overflow:hidden;
+  }
+  .col::before{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(60% 80% at 100% 0%,rgba(91,141,255,0.18),transparent 60%);
+    opacity:0;transition:opacity .35s ease;
+  }
+  .col:hover{transform:translateY(-3px);border-color:var(--line-2);box-shadow:0 14px 40px rgba(11,18,36,0.10),0 0 60px var(--glow-soft)}
+  .col:hover::before{opacity:1}
+  .col-num{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:24px;
+  }
+  .col-num em{font-family:var(--display);font-style:italic;font-weight:400;font-size:13px;letter-spacing:-0.02em;text-transform:none;color:var(--accent);margin-right:8px}
+  .col h3{
+    font-family:var(--display);font-weight:500;font-size:26px;
+    line-height:1.08;letter-spacing:-0.035em;margin-bottom:20px;
+    max-width:18ch;color:var(--ink);
+  }
+  .col p{color:var(--ink-2);font-size:14.5px;line-height:1.6;max-width:36ch;opacity:.85}
+  .col .tags{margin-top:auto;padding-top:28px;display:flex;flex-wrap:wrap;gap:6px}
+  .col .tags span{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--ink-2);padding:6px 10px;border:1px solid var(--line-2);border-radius:999px;
+    background:var(--surface);
+  }
 
-    /* ====== Pilot bar (still — no pulse) ====== */
-    .pilot {
-      background: var(--abyss);
-      border-bottom: 1px solid var(--hairline-on-ink);
-      padding: 10px var(--xxxl);
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bone-on-ink-fade);
-      position: relative;
-      z-index: 11;
-    }
-    .pilot .dot {
-      display: inline-block;
-      width: 5px; height: 5px;
-      background: var(--signal);
-      border-radius: 50%;
-      vertical-align: middle;
-      margin-right: 10px;
-      transform: translateY(-1px);
-    }
-    .pilot a {
-      color: var(--bone-on-ink);
-      border-bottom: 1px solid var(--hairline-on-ink-strong);
-      padding-bottom: 1px;
-      margin-left: 10px;
-      transition: border-color 0.2s var(--ease-standard);
-    }
-    .pilot a:hover { border-color: var(--bone-on-ink); }
-    @media (max-width: 760px) { .pilot { padding: 10px var(--xl); font-size: 10px; letter-spacing: 0.14em; } }
+  /* ───── Final CTA ───── */
+  .cta{
+    position:relative;overflow:hidden;color:var(--ink);
+    background:transparent;
+    padding:160px 32px 140px;border-top:1px solid var(--line);
+  }
+  .cta-bg{
+    position:absolute;inset:-20%;pointer-events:none;
+    background:
+      radial-gradient(36% 36% at 30% 40%,rgba(61,108,255,0.65),transparent 60%),
+      radial-gradient(40% 40% at 70% 70%,rgba(40,80,220,0.55),transparent 60%),
+      radial-gradient(28% 28% at 60% 20%,rgba(120,90,235,0.40),transparent 60%);
+    filter:blur(50px);
+    animation:drift 24s ease-in-out infinite alternate;
+  }
+  .cta::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(to right,rgba(11,18,36,0.05) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(11,18,36,0.04) 1px,transparent 1px);
+    background-size:80px 80px;
+  }
+  .cta::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(11,18,36,0.05) 1px,transparent 1px);
+    background-size:3px 3px;opacity:.55;
+  }
+  /* cta-tag styles unified with hero-tag above */
+  .cta-ghost{
+    position:absolute;left:-3%;bottom:-12%;
+    font-family:var(--display);font-weight:300;font-style:italic;font-size:34vw;line-height:1;
+    color:rgba(11,18,36,0.06);letter-spacing:-0.075em;
+    pointer-events:none;user-select:none;
+  }
+  .cta-inner{position:relative;z-index:1;max-width:1180px;margin:0 auto}
+  .cta .label{
+    color:var(--ink-2);display:inline-flex;align-items:center;gap:12px;
+    padding:10px 16px;border:1px solid var(--line-2);border-radius:999px;
+    background:var(--surface);backdrop-filter:blur(14px);
+  }
+  .cta .label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(61,108,255,0.18),0 0 12px var(--glow);animation:pulse 2s ease-in-out infinite}
+  .cta h2{
+    margin-top:36px;font-family:var(--display);font-weight:500;
+    font-size:clamp(64px,11vw,200px);letter-spacing:-0.06em;line-height:0.92;
+    color:var(--ink);max-width:14ch;
+  }
+  .cta h2 .it{
+    background:linear-gradient(120deg,#3d6cff 0%,#1f4ad9 50%,#5e3acf 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    font-weight:300;letter-spacing:-0.05em;
+  }
+  .cta p{
+    margin-top:48px;max-width:52ch;color:var(--ink-2);
+    font-weight:300;font-size:17px;line-height:1.55;
+  }
+  .cta-cta{margin-top:52px;display:flex;gap:12px;flex-wrap:wrap}
+  .cta-meta{
+    margin-top:120px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    padding:24px;border-radius:24px;
+    background:var(--surface);backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    border:1px solid var(--line);
+  }
+  .cta-meta > div{
+    padding:8px 24px;border-right:1px solid var(--line);
+  }
+  .cta-meta > div:last-child{border-right:0}
+  .cta-meta .k{font-family:var(--mono);font-size:10px;letter-spacing:0.20em;text-transform:uppercase;color:var(--muted)}
+  .cta-meta .v{margin-top:10px;font-family:var(--display);font-weight:500;font-size:20px;color:var(--ink);letter-spacing:-0.03em}
 
-    /* ====== Masthead ====== */
-    .masthead {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(244, 239, 230, 0.86);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--hairline);
-    }
-    .masthead-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--lg) 0;
-      gap: var(--xxl);
-    }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--md);
-    }
-    .brand-icon { width: 30px; height: 30px; flex-shrink: 0; border-radius: 6px; }
-    .brand-name {
-      font-family: 'Instrument Serif', serif;
-      font-size: 22px;
-      letter-spacing: -0.012em;
-      color: var(--abyss);
-      line-height: 1;
-      padding-top: 2px;
-    }
-    nav.primary {
-      display: flex;
-      align-items: center;
-      gap: var(--xxl);
-    }
-    nav.primary .nav-link {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--slate);
-      transition: color 0.2s var(--ease-standard);
-    }
-    nav.primary .nav-link:hover { color: var(--abyss); }
-    .anmelden-link {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--abyss);
-      border-bottom: 1px solid var(--abyss);
-      padding-bottom: 2px;
-      transition: opacity 0.2s var(--ease-standard);
-    }
-    .anmelden-link:hover { opacity: 0.7; }
-    .lang {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      color: var(--fog);
-    }
-    .lang .on { color: var(--abyss); }
-    .lang .sep { margin: 0 6px; color: var(--hairline); }
-    @media (max-width: 1024px) {
-      nav.primary .nav-link { display: none; }
-    }
+  /* ───── Footer ───── */
+  footer.foot{
+    background:transparent;color:var(--ink-2);
+    padding:140px 0 40px;border-top:1px solid var(--line);position:relative;
+  }
+  .foot-head{
+    display:grid;grid-template-columns:1fr;gap:24px;margin-bottom:88px;
+    padding-bottom:32px;border-bottom:1px solid var(--line);position:relative;
+  }
+  .foot-num{
+    font-family:var(--display);font-weight:300;font-style:italic;
+    font-size:clamp(120px,18vw,260px);
+    background:linear-gradient(180deg,#3d6cff 0%,#1f4ad9 60%,#0e1f7a 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    line-height:0.82;letter-spacing:-0.07em;margin-left:-12px;
+  }
+  .foot-title{
+    font-family:var(--display);font-weight:500;
+    font-size:clamp(34px,5vw,72px);letter-spacing:-0.045em;line-height:0.98;
+    max-width:24ch;color:var(--ink);
+  }
+  .foot-title .it{
+    background:linear-gradient(120deg,#3d6cff 0%,#1f4ad9 60%,#5e3acf 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    font-weight:300;letter-spacing:-0.038em;
+  }
+  .foot-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+  }
+  .foot-col{
+    padding:24px 24px 28px;border-radius:20px;
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+  }
+  .foot-col h6{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:18px;
+  }
+  .foot-col a,.foot-col p{
+    display:block;color:var(--ink-2);font-size:14px;line-height:1.8;opacity:.88;
+  }
+  .foot-col a:hover{color:var(--accent-hi);opacity:1}
+  .foot-bottom{
+    margin-top:48px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:10px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .foot-mark{
+    position:absolute;right:32px;top:32px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--muted);
+  }
 
-    /* ====== Buttons (the religion: 5 radii, 1 shadow) ====== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 26px;
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 500;
-      font-size: 15px;
-      letter-spacing: 0;
-      border: 1px solid transparent;
-      border-radius: 14px; /* radius.lg per spec */
-      cursor: pointer;
-      transition: background 0.2s var(--ease-standard),
-                  color 0.2s var(--ease-standard),
-                  border-color 0.2s var(--ease-standard);
-    }
-    .btn-ink {
-      background: linear-gradient(167deg, var(--ink-2) 0%, var(--abyss) 100%);
-      color: var(--bone);
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-ink::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 30%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
-      pointer-events: none;
-    }
-    .btn-ink:hover { background: linear-gradient(167deg, var(--ink) 0%, var(--abyss) 100%); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--graphite);
-      border-color: var(--hairline);
-    }
-    .btn-ghost:hover {
-      border-color: var(--abyss);
-      background: rgba(6, 31, 110, 0.02);
-    }
+  /* ───── Section V — FAQ (glass) ───── */
+  .faq{
+    border-radius:24px;background:var(--surface);
+    border:1px solid var(--line);overflow:hidden;
+    backdrop-filter:blur(24px) saturate(140%);
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+  }
+  .q{
+    display:grid;grid-template-columns:90px 1.1fr 1.6fr;gap:24px;
+    padding:32px 28px;border-bottom:1px solid var(--line);
+    align-items:start;transition:background .25s;
+  }
+  .q:last-child{border-bottom:0}
+  .q:hover{background:rgba(91,141,255,0.06)}
+  .q .qn{
+    font-family:var(--display);font-style:italic;font-weight:300;font-size:36px;
+    background:linear-gradient(180deg,#3d6cff 0%,#0e1f7a 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    letter-spacing:-0.05em;line-height:.9;font-feature-settings:"tnum";
+  }
+  .q .qt{
+    font-family:var(--display);font-weight:500;font-size:22px;
+    letter-spacing:-0.035em;line-height:1.15;max-width:28ch;color:var(--ink);
+  }
+  .q .qa{color:var(--ink-2);opacity:.82;font-size:14.5px;line-height:1.6;max-width:56ch;padding-top:6px}
 
-    /* ====== Hero ======
-       Applies "The Ledger Move": display + italic pairing,
-       second line italic, arrives 200ms after first line.
-       v5.1: layered cinematic atmosphere (seal · trace · signal). */
-    .hero {
-      padding: var(--hero) 0 calc(var(--hero) + var(--xxl));
-      border-bottom: 1px solid var(--hairline);
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hero .container { position: relative; z-index: 4; }
+  /* ───── Section IV — Authors (glass) ───── */
+  .authors{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .author{
+    border-radius:24px;overflow:hidden;
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(24px) saturate(140%);
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+    display:flex;flex-direction:column;position:relative;
+    transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+  }
+  .author:hover{transform:translateY(-3px);border-color:rgba(61,108,255,0.50);box-shadow:0 14px 40px rgba(11,18,36,0.10),0 0 60px var(--glow-soft)}
+  .author .portrait{
+    aspect-ratio:1/1;display:flex;align-items:flex-end;justify-content:flex-start;
+    padding:28px;
+    font-family:var(--display);font-weight:300;font-style:italic;font-size:clamp(120px,16vw,200px);
+    letter-spacing:-0.075em;line-height:.85;color:#fff;
+    background:
+      radial-gradient(60% 60% at 30% 20%,rgba(91,141,255,0.45),transparent 60%),
+      radial-gradient(50% 50% at 80% 80%,rgba(140,110,255,0.30),transparent 60%),
+      linear-gradient(160deg,#0a0f1f 0%,#050810 100%);
+    position:relative;overflow:hidden;
+  }
+  .author .portrait::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(to right,rgba(255,255,255,0.04) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(255,255,255,0.04) 1px,transparent 1px);
+    background-size:40px 40px;opacity:.55;
+  }
+  .author .portrait::after{
+    content:attr(data-tag);position:absolute;top:24px;left:28px;right:28px;
+    display:flex;justify-content:space-between;
+    font-family:var(--mono);font-style:normal;font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:rgba(255,255,255,0.55);
+  }
+  .author.invert .portrait{
+    background:
+      radial-gradient(60% 60% at 70% 30%,rgba(120,90,255,0.40),transparent 60%),
+      radial-gradient(50% 60% at 10% 80%,rgba(91,141,255,0.30),transparent 60%),
+      linear-gradient(160deg,#080a18 0%,#020409 100%);
+  }
+  .author.dark .portrait{
+    background:
+      radial-gradient(60% 60% at 50% 30%,rgba(64,108,255,0.38),transparent 60%),
+      linear-gradient(160deg,#070a14 0%,#040610 100%);
+  }
+  .author-body{padding:28px 28px 32px;flex:1;display:flex;flex-direction:column}
+  .author h6{
+    font-family:var(--display);font-weight:500;font-size:22px;
+    letter-spacing:-0.035em;line-height:1.05;color:var(--ink);
+  }
+  .author .role{
+    margin-top:8px;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:0.20em;text-transform:uppercase;color:var(--accent);
+  }
+  .author p{
+    margin-top:20px;color:var(--ink-2);opacity:.82;font-size:13.5px;line-height:1.6;flex:1;
+  }
+  .author .credit{
+    margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--muted);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .author .credit .arrow{font-family:var(--sans);font-size:14px;letter-spacing:0;text-transform:none;color:var(--ink);transition:transform .2s}
+  .author:hover .credit .arrow{transform:translateX(4px);color:var(--accent-hi)}
 
-    /* ====== Cinematic atmosphere ======
-       v5.1 hero motion · 100% hand-crafted SVG/CSS · religion-respecting
-       (no people · no teeth · no hands · no AI-generated assets)
-       SWAP TARGET: replace .hero-cinema-seal with a <video autoplay loop
-       muted playsinline poster="…"> when an editorial-aligned 30s loop
-       (Coverr / Mixkit / commissioned) is available. */
+  /* ───── Section III — Bauplan ledger ───── */
+  .bauplan{
+    border-radius:24px;background:var(--surface);
+    border:1px solid var(--line);overflow:hidden;
+    backdrop-filter:blur(24px) saturate(140%);
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+  }
+  .bauplan-head{
+    display:grid;grid-template-columns:90px 180px 1fr 1.4fr;gap:24px;
+    padding:18px 28px;border-bottom:1px solid var(--line);
+    font-family:var(--mono);font-size:10px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--muted);
+    background:rgba(11,18,36,0.03);
+  }
+  .row{
+    display:grid;grid-template-columns:90px 180px 1fr 1.4fr;gap:24px;
+    padding:28px;border-bottom:1px solid var(--line);align-items:start;
+    transition:background .25s;cursor:default;position:relative;
+  }
+  .row:last-child{border-bottom:0}
+  .row:hover{background:rgba(91,141,255,0.06)}
+  .row .rn{
+    font-family:var(--display);font-style:italic;font-weight:300;font-size:40px;
+    background:linear-gradient(180deg,#3d6cff 0%,#0e1f7a 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    line-height:.88;letter-spacing:-0.05em;
+    font-feature-settings:"tnum";
+  }
+  .row .rk{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--accent);padding-top:14px;
+  }
+  .row h5{
+    font-family:var(--display);font-weight:500;font-size:22px;
+    letter-spacing:-0.032em;line-height:1.15;max-width:24ch;color:var(--ink);
+    padding-top:8px;
+  }
+  .row p{color:var(--ink-2);opacity:.82;font-size:14px;line-height:1.6;max-width:56ch;padding-top:8px}
+  .row p .check{
+    display:inline-block;width:16px;height:16px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:9px;line-height:16px;
+    text-align:center;margin-right:10px;vertical-align:1px;
+    box-shadow:0 0 12px var(--glow-soft);
+  }
 
-    .hero-cinema {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
+  /* ───── Section II — Vordruck grid (glass) ───── */
+  .vordrucke{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+  }
+  .vordruck{
+    padding:30px 28px 26px;border-radius:24px;
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(24px) saturate(140%);
+    -webkit-backdrop-filter:blur(24px) saturate(140%);
+    transition:all .35s ease;position:relative;
+    min-height:260px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    overflow:hidden;
+  }
+  .vordruck::before{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(70% 90% at 0% 0%,rgba(91,141,255,0.20),transparent 60%);
+    opacity:0;transition:opacity .35s ease;
+  }
+  .vordruck:hover{
+    transform:translateY(-3px);border-color:rgba(61,108,255,0.50);
+    box-shadow:0 14px 40px rgba(11,18,36,0.10),0 0 60px var(--glow-soft);
+  }
+  .vordruck:hover::before{opacity:1}
+  .vordruck .code{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:0.20em;
+    text-transform:uppercase;color:var(--accent);transition:color .2s;
+  }
+  .vordruck h4{
+    font-family:var(--display);font-weight:500;font-size:26px;
+    line-height:1.08;letter-spacing:-0.035em;margin-top:18px;
+    max-width:16ch;color:var(--ink);
+  }
+  .vordruck p{
+    margin-top:16px;color:var(--ink-2);opacity:.82;font-size:13.5px;line-height:1.55;
+    max-width:32ch;
+  }
+  .vordruck .meta{
+    margin-top:24px;padding-top:18px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:10px;letter-spacing:0.18em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .vordruck .meta .arrow{font-family:var(--sans);font-style:normal;letter-spacing:0;font-size:16px;transition:transform .25s;color:var(--ink)}
+  .vordruck:hover .meta .arrow{transform:translateX(4px);color:var(--accent-hi)}
 
-    /* Layer 0 — the editorial video loop (Higgsfield seedance_2_0, noir) */
-    .hero-cinema-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      filter: contrast(1.04) brightness(0.96) saturate(0.78);
-      opacity: 0;
-      animation: video-fade-in 2.4s var(--ease-ceremonial) 0.3s forwards;
-    }
-    @keyframes video-fade-in { to { opacity: 1; } }
-
-    /* Layer 0a — paper-tone veil so the moral H1 stays legible on the left.
-       Strong bone on the LEFT (text territory), fades to transparent on the
-       RIGHT (where the seal SVG lives and the ink-bleed video can breathe). */
-    .hero-cinema-veil {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(90deg,
-          rgba(244,239,230,0.96) 0%,
-          rgba(244,239,230,0.92) 28%,
-          rgba(244,239,230,0.74) 52%,
-          rgba(244,239,230,0.46) 76%,
-          rgba(244,239,230,0.32) 100%),
-        linear-gradient(180deg,
-          rgba(244,239,230,0.85) 0%,
-          rgba(244,239,230,0.0) 18%,
-          rgba(244,239,230,0.0) 78%,
-          rgba(244,239,230,0.85) 100%);
-    }
-    @media (max-width: 760px) {
-      /* On phones, text is centered narrower — use radial veil instead */
-      .hero-cinema-veil {
-        background:
-          radial-gradient(ellipse at center,
-            rgba(244,239,230,0.62) 0%,
-            rgba(244,239,230,0.88) 60%,
-            rgba(244,239,230,0.96) 100%);
-      }
-    }
-
-    /* Layer 1 — the seal: concentric rings, drifting */
-    .hero-cinema-seal {
-      position: absolute;
-      top: 50%;
-      right: -680px;
-      width: 1600px;
-      height: 1600px;
-      transform: translateY(-50%);
-      color: var(--ink);
-      opacity: 0;
-      animation: seal-fade-in 2.4s var(--ease-ceremonial) 0.5s forwards,
-                 seal-rotate 480s linear infinite;
-    }
-    @keyframes seal-fade-in { to { opacity: 0.08; } }
-    @keyframes seal-rotate {
-      from { transform: translateY(-50%) rotate(0deg); }
-      to   { transform: translateY(-50%) rotate(360deg); }
-    }
-    @media (max-width: 760px) {
-      .hero-cinema-seal { right: -900px; width: 1200px; height: 1200px; }
-    }
-
-    /* Layer 2 — the trace: a slow horizontal hairline drawing across */
-    .hero-cinema-trace-row {
-      position: absolute;
-      top: 38%;
-      left: 0;
-      right: 0;
-      height: 1px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .hero-cinema-trace {
-      position: absolute;
-      top: 0; left: 0;
-      height: 1px;
-      width: 0;
-      background: var(--ink);
-      opacity: 0.32;
-      animation: trace-loop 28s var(--ease-standard) 2s infinite;
-    }
-    @keyframes trace-loop {
-      0%   { width: 0;    opacity: 0.32; }
-      55%  { width: 100%; opacity: 0.32; }
-      66%  { width: 100%; opacity: 0.10; }
-      72%  { width: 100%; opacity: 0; }
-      100% { width: 0;    opacity: 0; }
-    }
-
-    /* Layer 3 — the signal moment: a single emerald dot at trace end */
-    .hero-cinema-dot {
-      position: absolute;
-      top: 38%;
-      right: 0;
-      width: 9px;
-      height: 9px;
-      margin-top: -4px;
-      border-radius: 50%;
-      background: var(--signal);
-      transform: scale(0);
-      opacity: 0;
-      z-index: 3;
-      animation: dot-loop 28s var(--ease-ceremonial) 2s infinite;
-    }
-    @keyframes dot-loop {
-      0%, 53%   { opacity: 0; transform: scale(0); }
-      55%       { opacity: 1; transform: scale(1); }
-      62%       { opacity: 1; transform: scale(1); }
-      68%       { opacity: 0; transform: scale(1.6); }
-      100%      { opacity: 0; transform: scale(0); }
-    }
-
-    /* Layer 4 — faint hairline at hero base, fades in once on load */
-    .hero-cinema-edge {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, var(--hairline) 30%, var(--hairline) 70%, transparent 100%);
-      opacity: 0;
-      animation: seal-fade-in 1.6s var(--ease-standard) 1.4s forwards;
-    }
-
-    /* Reduced motion — kill the cinema animation, keep static pose */
-    @media (prefers-reduced-motion: reduce) {
-      .hero-cinema-video { display: none; }
-      .hero-cinema-seal { animation: none; opacity: 0.05; }
-      .hero-cinema-trace, .hero-cinema-dot, .hero-cinema-edge { animation: none; }
-      .hero-cinema-trace { width: 100%; opacity: 0.18; }
-      .hero-cinema-dot { display: none; }
-    }
-    .hero-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-bottom: var(--xxl);
-    }
-
-    /* THE LEDGER MOVE */
-    .hero-h1 {
-      font-family: 'Instrument Serif', serif;
-      font-weight: 400;
-      font-size: clamp(40px, 6.5vw, 92px);
-      line-height: 1.04;
-      letter-spacing: -0.022em;
-      color: var(--abyss);
-      margin: 0 0 var(--xxl);
-      max-width: 22ch;
-    }
-    .hero-h1 .line-1 {
-      display: block;
-      font-style: normal;
-      opacity: 0;
-      transform: translateY(12px);
-      animation: ledger-move-in 0.9s var(--ease-ceremonial) forwards;
-      animation-delay: 0.2s;
-    }
-    .hero-h1 .line-2 {
-      display: block;
-      font-style: italic;
-      color: var(--ink);
-      opacity: 0;
-      transform: translateY(20px);
-      filter: blur(0.6px);
-      animation: ledger-move-in-italic 0.9s var(--ease-ceremonial) forwards;
-      animation-delay: 0.4s; /* 200ms after line 1 */
-    }
-    @keyframes ledger-move-in {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes ledger-move-in-italic {
-      to { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
-
-    .hero-rule {
-      width: 80px;
-      height: 1px;
-      background: var(--abyss);
-      margin: var(--xxl) 0 var(--lg);
-      opacity: 0;
-      animation: rule-in 0.6s var(--ease-standard) forwards;
-      animation-delay: 0.7s;
-    }
-    @keyframes rule-in { to { opacity: 1; } }
-
-    .hero-tagline {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 22px;
-      line-height: 1.35;
-      color: var(--slate);
-      margin: 0 0 var(--xxl);
-      opacity: 0;
-      animation: rule-in 0.7s var(--ease-ceremonial) forwards;
-      animation-delay: 0.85s;
-    }
-
-    .hero-lede {
-      max-width: 60ch;
-      font-size: 17px;
-      line-height: 1.55;
-      color: var(--slate);
-      margin: 0 0 var(--xxl);
-      font-weight: 400;
-      opacity: 0;
-      animation: rule-in 0.7s var(--ease-standard) forwards;
-      animation-delay: 1.0s;
-    }
-    .hero-lede strong {
-      color: var(--graphite);
-      font-weight: 500;
-    }
-    .hero-lede em { font-style: italic; color: var(--ink); }
-
-    .hero-byline {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin: 0 0 var(--xxl);
-      padding-top: var(--lg);
-      border-top: 1px solid var(--hairline);
-      max-width: 60ch;
-      opacity: 0;
-      animation: rule-in 0.7s var(--ease-standard) forwards;
-      animation-delay: 1.15s;
-    }
-    .hero-byline .person {
-      color: var(--abyss);
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      gap: var(--md);
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: rule-in 0.7s var(--ease-standard) forwards;
-      animation-delay: 1.3s;
-    }
-
-    /* The signature line — every section carries one */
-    .signature {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--lg);
-      margin-top: var(--xxl);
-      padding-top: var(--lg);
-      border-top: 1px dotted var(--hairline);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--fog);
-      flex-wrap: wrap;
-    }
-    .signature .left { color: var(--slate); }
-
-    /* The hero-margin (right-side note) */
-    .hero-margin {
-      position: absolute;
-      right: var(--xxxl);
-      top: 200px;
-      max-width: 220px;
-      padding: var(--lg) var(--xl);
-      border-left: 1px solid var(--abyss);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      line-height: 1.6;
-      color: var(--slate);
-      letter-spacing: 0.04em;
-      opacity: 0;
-      animation: rule-in 0.6s var(--ease-standard) forwards;
-      animation-delay: 1.4s;
-    }
-    .hero-margin .label {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-bottom: var(--md);
-    }
-    @media (max-width: 1180px) { .hero-margin { display: none; } }
-
-    /* ====== Section frame ====== */
-    section.chapter {
-      padding: var(--hero) 0;
-      border-bottom: 1px solid var(--hairline);
-      position: relative;
-      z-index: 2;
-    }
-    .chapter-head {
-      display: grid;
-      grid-template-columns: 80px 200px 1fr;
-      gap: var(--xxl);
-      align-items: baseline;
-      margin-bottom: var(--xxxl);
-      padding-bottom: var(--xl);
-      border-bottom: 1px solid var(--hairline);
-    }
-    @media (max-width: 760px) {
-      .chapter-head { grid-template-columns: 1fr; gap: var(--md); }
-    }
-    .chapter-mark {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 24px;
-      color: var(--ink);
-      line-height: 1;
-    }
-    .chapter-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-    }
-    .chapter-title {
-      font-family: 'Instrument Serif', serif;
-      font-weight: 400;
-      font-size: clamp(32px, 4.6vw, 56px);
-      line-height: 1.08;
-      letter-spacing: -0.018em;
-      color: var(--abyss);
-      margin: 0;
-      max-width: 24ch;
-    }
-    .chapter-title .italic { font-style: italic; color: var(--ink); }
-
-    .chapter-lede {
-      max-width: 64ch;
-      font-size: 17px;
-      line-height: 1.55;
-      color: var(--slate);
-      margin: 0 0 var(--xxxl);
-      font-weight: 400;
-    }
-    .chapter-lede strong { color: var(--graphite); font-weight: 500; }
-    .chapter-lede em { font-style: italic; color: var(--ink); }
-
-    /* ====== Methode (3 steps) ====== */
-    .method {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--xxl);
-    }
-    @media (max-width: 880px) {
-      .method { grid-template-columns: 1fr; gap: var(--xxl); }
-    }
-    .method-step {
-      padding-top: var(--xl);
-      border-top: 1px solid var(--graphite);
-    }
-    .method-num {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 56px;
-      line-height: 0.9;
-      color: var(--ink);
-      margin-bottom: var(--xl);
-    }
-    .method-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-bottom: var(--md);
-    }
-    .method-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 28px;
-      color: var(--abyss);
-      letter-spacing: -0.012em;
-      line-height: 1.15;
-      margin: 0 0 var(--lg);
-    }
-    .method-body {
-      font-size: 15px;
-      line-height: 1.55;
-      color: var(--slate);
-      margin: 0 0 var(--xl);
-    }
-    .method-detail {
-      padding-top: var(--md);
-      border-top: 1px dotted var(--hairline);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      line-height: 1.6;
-      color: var(--fog);
-      letter-spacing: 0.04em;
-    }
-
-    /* ====== Werkstatt (catalog) ====== */
-    .catalog {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-      border-top: 1px solid var(--hairline);
-    }
-    @media (max-width: 760px) { .catalog { grid-template-columns: 1fr; } }
-    .catalog-item {
-      padding: var(--xxl) var(--xl) var(--xxl) 0;
-      border-bottom: 1px solid var(--hairline);
-      position: relative;
-    }
-    .catalog-item:nth-child(odd) {
-      border-right: 1px solid var(--hairline);
-      padding-right: var(--xxl);
-    }
-    .catalog-item:nth-child(even) {
-      padding-left: var(--xxl);
-    }
-    @media (max-width: 760px) {
-      .catalog-item:nth-child(odd) { border-right: 0; padding-right: 0; }
-      .catalog-item:nth-child(even) { padding-left: 0; }
-    }
-    .catalog-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-bottom: var(--md);
-    }
-    .catalog-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: 28px;
-      letter-spacing: -0.012em;
-      color: var(--abyss);
-      line-height: 1.1;
-      margin: 0 0 var(--md);
-    }
-    .catalog-italic {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 17px;
-      color: var(--ink);
-      margin-bottom: var(--lg);
-      line-height: 1.4;
-    }
-    .catalog-body {
-      font-size: 15px;
-      line-height: 1.55;
-      color: var(--slate);
-      max-width: 50ch;
-    }
-    .catalog-detail-row {
-      margin-top: var(--xl);
-      padding-top: var(--md);
-      border-top: 1px dotted var(--hairline);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--fog);
-      line-height: 1.6;
-    }
-
-    /* ====== Kompendium (legal-document layout) ====== */
-    .kompendium {
-      border-top: 1px solid var(--graphite);
-    }
-    .kompendium-row {
-      display: grid;
-      grid-template-columns: 220px 1fr 1.4fr;
-      gap: var(--xxl);
-      padding: var(--xl) 0;
-      border-bottom: 1px solid var(--hairline);
-      align-items: baseline;
-    }
-    @media (max-width: 880px) {
-      .kompendium-row { grid-template-columns: 1fr; gap: var(--md); padding: var(--lg) 0; }
-    }
-    .kompendium-id {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink);
-      font-weight: 500;
-    }
-    .kompendium-name {
-      font-family: 'Instrument Serif', serif;
-      font-size: 22px;
-      color: var(--abyss);
-      letter-spacing: -0.01em;
-      line-height: 1.25;
-    }
-    .kompendium-detail {
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: var(--slate);
-    }
-    .kompendium-detail code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      color: var(--ink);
-      background: var(--parchment);
-      padding: 1px 5px;
-      border-radius: 2px;
-    }
-    .kompendium-detail em { font-style: italic; color: var(--graphite); }
-
-    /* ====== Träger (founder + team) ====== */
-    .traeger-prose {
-      font-family: 'Instrument Serif', serif;
-      font-size: 26px;
-      line-height: 1.4;
-      color: var(--graphite);
-      letter-spacing: -0.005em;
-      max-width: 36ch;
-      margin: 0 0 var(--xxxl);
-    }
-    .traeger-prose strong {
-      font-style: italic;
-      color: var(--ink);
-      font-weight: 400;
-    }
-    .traeger-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--xxl);
-      margin-bottom: var(--xxl);
-    }
-    @media (max-width: 880px) {
-      .traeger-grid { grid-template-columns: 1fr; gap: var(--xxl); }
-    }
-    .traeger-card {
-      padding-top: var(--xl);
-      border-top: 1px solid var(--graphite);
-    }
-    .traeger-portrait {
-      width: 100%;
-      aspect-ratio: 4/5;
-      background: var(--parchment);
-      margin-bottom: var(--xl);
-      position: relative;
-      overflow: hidden;
-      border-radius: 0; /* archival, square */
-      filter: grayscale(0.95);
-    }
-    .traeger-portrait .placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Instrument Serif', serif;
-      font-size: 96px;
-      color: var(--fog);
-      letter-spacing: -0.02em;
-      opacity: 0.3;
-    }
-    .traeger-portrait .caption {
-      position: absolute;
-      bottom: var(--md);
-      left: var(--md);
-      right: var(--md);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--slate);
-      text-align: left;
-    }
-    .traeger-role {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin-bottom: var(--md);
-    }
-    .traeger-name {
-      font-family: 'Instrument Serif', serif;
-      font-size: 28px;
-      color: var(--abyss);
-      letter-spacing: -0.012em;
-      line-height: 1.1;
-      margin: 0 0 var(--sm);
-    }
-    .traeger-loc {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 16px;
-      color: var(--ink);
-      margin-bottom: var(--lg);
-      line-height: 1.4;
-    }
-    .traeger-bio {
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: var(--slate);
-      margin: 0 0 var(--md);
-    }
-    .traeger-link {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      color: var(--ink);
-      border-bottom: 1px solid var(--ink);
-      padding-bottom: 1px;
-      transition: opacity 0.2s var(--ease-standard);
-    }
-    .traeger-link:hover { opacity: 0.7; }
-
-    .pilot-footnote {
-      padding-top: var(--xl);
-      border-top: 1px dotted var(--hairline);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--fog);
-      line-height: 1.6;
-    }
-
-    /* ====== FAQ (Bedenken) — Glass material ====== */
-    .faq {
-      border-top: 1px solid var(--hairline);
-    }
-    .faq-item {
-      border-bottom: 1px solid var(--hairline);
-      transition: background 0.3s var(--ease-standard);
-    }
-    .faq-item.open {
-      background: var(--cream);
-      border-top: 1px solid var(--hairline);
-      margin-top: -1px;
-    }
-    .faq-trigger {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 220px 1fr 24px;
-      gap: var(--xxl);
-      padding: var(--xl) 0;
-      align-items: baseline;
-      text-align: left;
-      cursor: pointer;
-      font: inherit;
-    }
-    @media (max-width: 760px) {
-      .faq-trigger { grid-template-columns: 1fr 24px; gap: var(--lg); padding: var(--lg) 0; }
-      .faq-id-mobile { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; color: var(--ink); margin-bottom: var(--xs); }
-      .faq-id-desktop { display: none; }
-    }
-    @media (min-width: 761px) {
-      .faq-id-mobile { display: none; }
-    }
-    .faq-id-desktop {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-    .faq-question {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 22px;
-      color: var(--abyss);
-      letter-spacing: -0.005em;
-      line-height: 1.3;
-    }
-    .faq-toggle {
-      font-family: 'Instrument Serif', serif;
-      font-size: 28px;
-      color: var(--ink);
-      width: 24px;
-      text-align: center;
-      line-height: 1;
-      transition: transform 0.3s var(--ease-standard);
-    }
-    .faq-item.open .faq-toggle { transform: rotate(45deg); }
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s var(--ease-standard);
-    }
-    .faq-item.open .faq-answer { max-height: 800px; }
-    .faq-answer-inner {
-      padding: 0 24px var(--xl) 244px;
-      max-width: 76ch;
-      font-size: 15.5px;
-      line-height: 1.65;
-      color: var(--slate);
-    }
-    .faq-answer-inner strong { color: var(--graphite); font-weight: 500; }
-    .faq-answer-inner em { font-style: italic; color: var(--ink); }
-    @media (max-width: 760px) {
-      .faq-answer-inner { padding: 0 0 var(--lg) 0; }
-    }
-
-    /* ====== Eintreten (final CTA) — Ink material ====== */
-    .eintreten {
-      padding: var(--hero) 0;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(167deg, var(--ink-2) 0%, var(--abyss) 100%);
-      color: var(--bone);
-    }
-    .eintreten::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 25%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
-      pointer-events: none;
-    }
-    .eintreten .container { position: relative; z-index: 2; }
-
-    /* The seal-moment hairline (Latin abbreviation: ad signandum) */
-    .eintreten-frame {
-      max-width: 720px;
-      margin: 0 auto;
-      text-align: center;
-      padding: var(--xxxl) var(--xl);
-      border-top: 1px solid var(--hairline-on-ink-strong);
-      border-bottom: 1px solid var(--hairline-on-ink-strong);
-      position: relative;
-    }
-    .eintreten-stamp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--bone-on-ink-fade);
-      margin-bottom: var(--xxl);
-    }
-    .eintreten-h1 {
-      font-family: 'Instrument Serif', serif;
-      font-weight: 400;
-      font-size: clamp(40px, 6vw, 76px);
-      letter-spacing: -0.022em;
-      color: var(--bone);
-      line-height: 1.05;
-      margin: 0 0 var(--lg);
-    }
-    .eintreten-h1 .italic { font-style: italic; color: var(--bone-on-ink-dim); }
-    .eintreten-italic {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 22px;
-      color: var(--bone-on-ink-dim);
-      margin: 0 auto var(--xxl);
-      max-width: 44ch;
-      line-height: 1.4;
-    }
-    .eintreten-body {
-      font-size: 16px;
-      line-height: 1.65;
-      color: var(--bone-on-ink-dim);
-      max-width: 56ch;
-      margin: 0 auto var(--xxl);
-    }
-    .eintreten-body strong { color: var(--bone); font-weight: 500; }
-    .eintreten-body em { font-style: italic; color: var(--bone); }
-    .eintreten-cta {
-      display: inline-flex;
-      gap: var(--md);
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: var(--xl);
-    }
-    .btn-on-ink-primary {
-      background: var(--bone);
-      color: var(--abyss);
-    }
-    .btn-on-ink-primary:hover { background: var(--cream); }
-    .btn-on-ink-ghost {
-      background: transparent;
-      color: var(--bone);
-      border-color: var(--hairline-on-ink-strong);
-    }
-    .btn-on-ink-ghost:hover {
-      border-color: var(--bone);
-      background: rgba(244,239,230,0.04);
-    }
-    .eintreten-whisper {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      color: var(--bone-on-ink-fade);
-    }
-
-    /* The signature block (date · ID · version) on every section */
-    .section-sig {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--lg);
-      margin-top: var(--xxl);
-      padding-top: var(--lg);
-      border-top: 1px dotted var(--hairline);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--fog);
-      flex-wrap: wrap;
-    }
-    .section-sig .right { color: var(--slate); }
-    .section-sig.on-ink {
-      border-top-color: var(--hairline-on-ink-strong);
-      color: var(--bone-on-ink-fade);
-    }
-    .section-sig.on-ink .right { color: var(--bone-on-ink-dim); }
-
-    /* ====== Footer ====== */
-    footer {
-      padding: var(--hero) 0 var(--xxxl);
-      background: var(--bone);
-      border-top: 1px solid var(--hairline);
-    }
-    .footer-strap {
-      font-family: 'Instrument Serif', serif;
-      font-size: 28px;
-      color: var(--abyss);
-      letter-spacing: -0.005em;
-      max-width: 22ch;
-      margin: 0 0 var(--xxxl);
-      line-height: 1.25;
-    }
-    .footer-strap .italic { font-style: italic; color: var(--ink); }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--xxl);
-      padding-bottom: var(--xxl);
-      border-bottom: 1px solid var(--hairline);
-      margin-bottom: var(--xl);
-    }
-    @media (max-width: 880px) {
-      .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--xl); }
-    }
-    .footer-col h4 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--fog);
-      margin: 0 0 var(--lg);
-      font-weight: 500;
-    }
-    .footer-col ul { list-style: none; padding: 0; margin: 0; }
-    .footer-col li { margin-bottom: var(--md); }
-    .footer-col a {
-      font-size: 14px;
-      color: var(--slate);
-      transition: color 0.2s var(--ease-standard);
-    }
-    .footer-col a:hover { color: var(--abyss); }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: var(--lg);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--fog);
-    }
-
-    /* ====== Reveal-on-scroll ====== */
-    .reveal { opacity: 0; transform: translateY(8px); transition: opacity 0.8s var(--ease-ceremonial), transform 0.8s var(--ease-ceremonial); }
-    .reveal.in { opacity: 1; transform: none; }
-
-    /* ====== Reduced motion ====== */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
+  @media (max-width:880px){
+    .triptych{grid-template-columns:1fr}
+    .col{border-right:0;border-bottom:1px solid var(--line);padding:32px 0}
+    .col + .col{padding-left:0}
+    .chapter-head{margin-bottom:56px}
+    section.chapter{padding:90px 0 80px}
+    .chapter-meta{position:static;text-align:left;margin-top:8px}
+    .vordrucke{grid-template-columns:1fr}
+    .bauplan-head{display:none}
+    .row{grid-template-columns:1fr;gap:8px;padding:24px 4px}
+    .row .rn{font-size:28px}
+    .authors{grid-template-columns:1fr}
+    .q{grid-template-columns:1fr;gap:8px}
+    .foot-grid{grid-template-columns:repeat(2,1fr)}
+    .cta{padding:110px 24px 96px}
+    .cta-meta{grid-template-columns:repeat(2,1fr)}
+    .cta-meta > div{border-right:0;border-bottom:1px solid rgba(255,255,255,0.10);padding-bottom:18px}
+    .hero-meta > div:nth-child(2){border-right:0}
+    .hero-meta{grid-template-columns:repeat(2,1fr)}
+    .sysbar-inner{grid-template-columns:1fr;text-align:center}
+    .sysbar .left,.sysbar .right{justify-content:center}
+  }
+  @media (max-width:760px){
+    .nav{display:none}
+    .topbar-inner{grid-template-columns:1fr auto;gap:16px}
+    .hero-inner{padding:90px 24px 80px}
+    .hero h1{font-size:clamp(48px,12vw,80px)}
+    .hero-tag,.hero-tag-r{display:none}
+    .wrap{padding:0 24px}
+    .chapter-marker,.chapter-marker-r{position:static;display:inline-block;margin:0 12px 12px 0}
+    .foot-grid{grid-template-columns:1fr}
+  }
+</style>
 </head>
 <body>
 
-  <!-- ============================================================
-       PILOT BAR · still, no pulse (the splash is the only indulgence)
-  ============================================================ -->
-  <div class="pilot">
-    <span class="dot"></span>Pilotbetrieb · Frühjahr 2026 · zahnärztliche Heimversorger DACH<a href="#eintreten">Bewerbung →</a>
+<div class="scroll-progress" id="sp"></div>
+
+<!-- ═══ SYSTEM STATUS STRIP ═══ -->
+<div class="sysbar">
+  <div class="sysbar-inner">
+    <div class="left">
+      <span class="sig">System · Operational</span>
+      <span class="div">/</span>
+      <span>Build 2026.04 · v0.9.7</span>
+      <span class="div">/</span>
+      <span>Frankfurt · DE</span>
+    </div>
+    <div>Aranthir — Edition № 01</div>
+    <div class="right">
+      <span id="clock">00:00:00 CET</span>
+      <span class="div">/</span>
+      <span>BSI C5 · § 75c SGB V</span>
+    </div>
   </div>
+</div>
 
-  <!-- ============================================================
-       MASTHEAD · paper bg, hairline bottom, no shadow
-  ============================================================ -->
-  <header class="masthead">
-    <div class="container masthead-inner">
-      <a href="#" class="brand" aria-label="Aranthir">
-        <svg class="brand-icon" viewBox="0 0 240 240" aria-hidden="true">
-          <rect width="240" height="240" rx="52" fill="#061F6E"/>
-          <text x="120" y="160" text-anchor="middle" font-family="Instrument Serif, serif" font-size="160" fill="#F4EFE6">A</text>
-          <circle cx="170" cy="76" r="7" fill="#0FA37F"/>
-        </svg>
-        <span class="brand-name">Aranthir</span>
-      </a>
-      <nav class="primary">
-        <a href="#methode" class="nav-link">Methode</a>
-        <a href="#werkstatt" class="nav-link">Werkstatt</a>
-        <a href="#kompendium" class="nav-link">Kompendium</a>
-        <a href="#traeger" class="nav-link">Träger</a>
-        <a href="#bedenken" class="nav-link">Bedenken</a>
-        <a href="#eintreten" class="anmelden-link">Demo anfragen →</a>
-        <span class="lang"><span class="on">DE</span><span class="sep">·</span><span>EN</span></span>
-      </nav>
+<!-- ═══ TOP BAR ═══ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Aranthir</span>
+    </a>
+    <nav class="nav">
+      <a href="#produkt">i · Produkt</a>
+      <a href="#vordrucke">ii · Vordrucke</a>
+      <a href="#bauplan">iii · Bauplan</a>
+      <a href="#autoren">iv · Autoren</a>
+      <a href="#fragen">v · Fragen</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#testen" class="pill">Aranthir testen <span>→</span></a>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- ============================================================
-       HERO · v5.1 Cinematic
-       Display + italic Ledger Move + layered atmospheric motion:
-       (1) seal — concentric rings, slow drift, 480s rotation
-       (2) trace — hairline drawing across the hero, 28s loop
-       (3) signal — single emerald dot at trace-end, the seal moment
-       (4) edge — faint base hairline, fades in once on load
-       All hand-crafted SVG/CSS. No AI assets. Religion-respecting.
-  ============================================================ -->
-  <section class="hero">
-    <!-- Cinema layers (background, behind .container) -->
-    <div class="hero-cinema" aria-hidden="true">
-      <video class="hero-cinema-video" autoplay loop muted playsinline preload="auto">
-        <source src="assets/hero-loop.mp4" type="video/mp4">
-      </video>
-      <div class="hero-cinema-veil"></div>
-      <svg class="hero-cinema-seal" viewBox="-600 -600 1200 1200" preserveAspectRatio="xMidYMid meet">
-        <g fill="none" stroke="currentColor" stroke-width="0.5">
-          <circle r="590" stroke-width="1"/>
-          <circle r="555"/>
-          <circle r="510"/>
-          <circle r="450"/>
-          <circle r="380"/>
-          <circle r="290"/>
-          <circle r="200"/>
-          <circle r="110"/>
-          <circle r="30"/>
-          <g stroke-width="1.2">
-            <line x1="0" y1="-590" x2="0" y2="-545"/>
-            <line x1="590" y1="0" x2="545" y2="0"/>
-            <line x1="0" y1="590" x2="0" y2="545"/>
-            <line x1="-590" y1="0" x2="-545" y2="0"/>
-          </g>
-          <g stroke-width="0.7">
-            <line x1="0" y1="-585" x2="0" y2="-560" transform="rotate(45)"/>
-            <line x1="0" y1="-585" x2="0" y2="-560" transform="rotate(135)"/>
-            <line x1="0" y1="-585" x2="0" y2="-560" transform="rotate(225)"/>
-            <line x1="0" y1="-585" x2="0" y2="-560" transform="rotate(315)"/>
-          </g>
-          <g stroke-width="0.4">
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(15)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(30)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(60)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(75)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(105)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(120)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(150)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(165)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(195)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(210)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(240)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(255)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(285)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(300)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(330)"/>
-            <line x1="0" y1="-585" x2="0" y2="-573" transform="rotate(345)"/>
-          </g>
-          <circle r="6" fill="currentColor" stroke="none"/>
-        </g>
-      </svg>
-      <div class="hero-cinema-trace-row"><div class="hero-cinema-trace"></div></div>
-      <div class="hero-cinema-dot"></div>
-      <div class="hero-cinema-edge"></div>
-    </div>
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-pan" aria-hidden="true"></div>
+  <div class="hero-tag">№ 00 — Auftakt</div>
+  <div class="hero-tag-r">Edition 2026 / DE</div>
+  <div class="hero-ghost" aria-hidden="true">Aranthir</div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow label">
+        <span class="dot"></span>
+        <div class="roll">
+          <span>i. Management · Übersicht in Echtzeit</span>
+          <span>ii. Heute · Aufgaben pro Heim</span>
+          <span>iii. Tagesprotokoll · PDF-Export</span>
+        </div>
+      </div>
 
-    <div class="container">
-      <div class="hero-eyebrow">Aufsuchende Heim-Zahnmedizin · Klinische Akte · Schweiz</div>
-
-      <h1 class="hero-h1">
-        <span class="line-1">Aranthir gibt Heim­bewohnern</span>
-        <span class="line-2">die Akte, die sie nicht selbst führen können.</span>
+      <h1>
+        Aranthir gibt Heimbewohnern <span class="it">die Akte, die sie nicht selbst führen können.</span>
       </h1>
 
-      <div class="hero-rule"></div>
-
-      <p class="hero-tagline">Die Akte, die sich selbst führt.</p>
-
-      <p class="hero-lede">Vier Gewinne aus einem Mechanismus: <strong>Kontinuität</strong> für den Heimbewohner, <strong>der Abend zurück</strong> für den Behandler, <strong>Compliance</strong> für die Praxis, <strong>eine saubere Akte</strong> für die Krankenkasse. Aranthir schreibt die Akte während der Behandlung — am Bett, nicht am Schreibtisch. <em>Es ist kein Produkt mit einem moralischen Beipack. Es ist ein System, in dem die Sorgfalt für den Bewohner die Effizienz aller anderen produziert.</em></p>
-
-      <p class="hero-byline">Herausgegeben von <span class="person">Jesús Gómez Rossi</span> · Klinischer Zahnarzt · Berlin · SwissMedAI GmbH</p>
+      <p class="hero-lede">
+        Eine schmale Plattform für Pflegeheime, Zahnärzte und gesetzliche Betreuer.
+        <strong>Sie <em class="hl hl-1">diktieren</em> — Aranthir schreibt mit.</strong>
+        Jeder deutsche <em class="hl hl-2">Vordruck</em> ist vorinstalliert,
+        jeder Eintrag ist <em class="hl hl-3">revisionssicher</em>,
+        jede Unterschrift ist auffindbar.
+      </p>
 
       <div class="hero-cta">
-        <a href="#eintreten" class="btn btn-ink">Demo anfragen.</a>
-        <a href="#methode" class="btn btn-ghost">Methode lesen.</a>
+        <a href="#testen" class="btn btn-primary">Aranthir testen <span class="arrow">→</span></a>
+        <a href="#rueckruf" class="btn btn-ghost">Rückruf bitten</a>
       </div>
 
-      <div class="signature">
-        <span class="left">Aranthir · Edition 2026 · v 0.1.0</span>
-        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
-      </div>
-    </div>
-
-    <aside class="hero-margin">
-      <span class="label">Erscheinungsort</span>
-      Berlin · Zürich. Pilotbetrieb mit Praxis Dr. Feld (Berlin) und Praxis Dr. Hess (München). Schweizer Datenresidenz, deutsche Vorschrift.
-    </aside>
-  </section>
-
-  <!-- ============================================================
-       § I · METHODE
-  ============================================================ -->
-  <section id="methode" class="chapter">
-    <div class="container">
-      <div class="chapter-head">
-        <div class="chapter-mark">§ I</div>
-        <div class="chapter-label">Methode</div>
-        <h2 class="chapter-title">Die Behandlung wird mitgeschrieben — <span class="italic">nicht nachgeschrieben.</span></h2>
-      </div>
-      <p class="chapter-lede">Sie diktieren bereits. Aranthir entfernt den Schritt, an dem die Genauigkeit sonst verloren geht — den Abend am Schreibtisch. <strong>Drei Schritte, eine Akte.</strong> Die Methode ist nicht neu. Die Methode ist endlich vollständig.</p>
-
-      <div class="method">
-        <article class="method-step">
-          <div class="method-num">i</div>
-          <div class="method-name">Mithören</div>
-          <h3 class="method-title">Während der Behandlung. Mit Handschuhen. Ohne Schreibtisch.</h3>
-          <p class="method-body">Aranthir hört das Behandlungs­gespräch in der gewohnten Sprache mit. Das Diktat bleibt am Gerät, bis Sie freigeben — kein Audio in der Cloud, kein Audio im Modell­training.</p>
-          <div class="method-detail">Whisper · DE-klinisch · offline-fähig · Audio nach Transkription verworfen</div>
-        </article>
-
-        <article class="method-step">
-          <div class="method-num">ii</div>
-          <div class="method-name">Strukturieren</div>
-          <h3 class="method-title">Die KI füllt den passenden deutschen Vordruck.</h3>
-          <p class="method-body">§174a, BEMA §22a, ZE-Pipeline, HKP. Jede Zeile am richtigen Ort. Fehlende Felder sind sichtbar, nicht versteckt. Sondierungs­tiefen sind erst dann vollständig, wenn sie wirklich vollständig sind.</p>
-          <div class="method-detail">§174a · 13 Stufen · BEMA §22a · 8 Schritte · ZE · 11 Zustände · HKP · Vordruck 10</div>
-        </article>
-
-        <article class="method-step">
-          <div class="method-num">iii</div>
-          <div class="method-name">Siegeln</div>
-          <h3 class="method-title">Sie lesen gegen, signieren, fertig.</h3>
-          <p class="method-body">Der Eintrag wird gesiegelt — nachträgliche Änderungen erzeugen einen versionierten Eintrag, der alte Stand bleibt sichtbar. Was Sie unterschrieben haben, ist, was Sie unterschrieben haben.</p>
-          <div class="method-detail">GoBD-Tamper-evident · digitale Signatur · Zeitstempel · Audit-Log · PDF-Export</div>
-        </article>
-      </div>
-
-      <div class="section-sig">
-        <span>§ I · Methode · Aranthir · Edition 2026</span>
-        <span class="right">Drei Schritte · eine Akte</span>
+      <div class="hero-meta">
+        <div><div class="k">Pilot</div><div class="v">3 Heime</div></div>
+        <div><div class="k">Bewohner</div><div class="v">412</div></div>
+        <div><div class="k">Diktate / Tag</div><div class="v">1.840</div></div>
+        <div><div class="k">Hosting</div><div class="v">Frankfurt</div></div>
       </div>
     </div>
-  </section>
 
-  <!-- ============================================================
-       § II · WERKSTATT
-  ============================================================ -->
-  <section id="werkstatt" class="chapter">
-    <div class="container">
-      <div class="chapter-head">
-        <div class="chapter-mark">§ II</div>
-        <div class="chapter-label">Werkstatt</div>
-        <h2 class="chapter-title">Jeder deutsche Vordruck ist <span class="italic">bereits vorinstalliert.</span></h2>
-      </div>
-      <p class="chapter-lede">Aranthir ist kein generisches Praxis-Werkzeug, das man an die Heim-Realität anpasst. Vom Sondierungs­raster bis zur Vollprothesen-Anprobe ist die ganze aufsuchende Heim-Zahnmedizin im Werkzeug­kasten. <em>Spezifisch, weil die Vorschrift spezifisch ist.</em></p>
-
-      <div class="catalog">
-        <article class="catalog-item">
-          <div class="catalog-tag">KI-Diktat</div>
-          <h3 class="catalog-title">Sprache zu Akte.</h3>
-          <p class="catalog-italic">Whisper-Transkription mit klinischem Vokabular.</p>
-          <p class="catalog-body">Die Behandlung wird auf Deutsch mitgeschrieben. KI-Modelle erkennen Befunde, Behandlungs­schritte, Material­codes. Der rohe Transkript bleibt am Gerät, bis Sie freigeben.</p>
-          <div class="catalog-detail-row">Whisper · DE-klinisch · offline · Audio verworfen</div>
-        </article>
-
-        <article class="catalog-item">
-          <div class="catalog-tag">PA · BEMA § 22a</div>
-          <h3 class="catalog-title">Acht Schritte mit Compliance-Gate.</h3>
-          <p class="catalog-italic">Befund → Störfaktoren → Vordruck → ATG → MHU → AIT → BEVa → UPT.</p>
-          <p class="catalog-body">Jeder Schritt mit eigenem Gate. Sondierungs­tiefen müssen vollständig sein, bevor die ATG freigegeben wird. Dokumentations­lücken sind technisch ausgeschlossen, nicht nur unerwünscht.</p>
-          <div class="catalog-detail-row">8 Schritte · Sondierungstiefen-Gate · BEMA-konform</div>
-        </article>
-
-        <article class="catalog-item">
-          <div class="catalog-tag">§ 174a SGB V</div>
-          <h3 class="catalog-title">13-stufiger Vordruck-Wizard.</h3>
-          <p class="catalog-italic">Vom Bett zur abrechnungs­fähigen Akte in einem Schritt.</p>
-          <p class="catalog-body">Diagnose, OPS-Codes, BEMA-Position, Patienten­einwilligung — die KI füllt aus dem Diktat vor, der Behandler liest gegen. Fehlende Felder sind sichtbar markiert, nicht versteckt.</p>
-          <div class="catalog-detail-row">13 Stufen · PDF-Export · Krankenkassen­konform</div>
-        </article>
-
-        <article class="catalog-item">
-          <div class="catalog-tag">ZE · Zahnersatz</div>
-          <h3 class="catalog-title">Elf Zustände vom Befund zur Eingliederung.</h3>
-          <p class="catalog-italic">Anzeige · Vordruck 10 · HKP · Labor · Anprobe · Eingliederung.</p>
-          <p class="catalog-body">Jeder Prothesen­fall durchläuft elf dokumentierte Zustände. Vollprothesen erhalten zwei Phasen. Lab-Kanban hängt synchron daran — die Zahn­technik weiß, wo der Fall steht.</p>
-          <div class="catalog-detail-row">11 Zustände · 2-Phasen Vollprothese · Lab-Kanban</div>
-        </article>
-
-        <article class="catalog-item">
-          <div class="catalog-tag">PA-Befund · 32 × 2</div>
-          <h3 class="catalog-title">Tiefen pro Zahn, mesial und distal.</h3>
-          <p class="catalog-italic">Farb­codiert nach Schweregrad. BOP- und Mobilitäts­markierung.</p>
-          <p class="catalog-body">Das vollständige PA-Blatt, digital. 32 Zähne × 2 Mess­punkte = 64 Datenpunkte pro Patient. Wer gemessen hat, mit welchem Wert, an welchem Tag — alles im Audit-Log.</p>
-          <div class="catalog-detail-row">64 Datenpunkte · BOP · Mobilität · Verlauf</div>
-        </article>
-
-        <article class="catalog-item">
-          <div class="catalog-tag">Verwaltung · Ampel</div>
-          <h3 class="catalog-title">Sofort · Fristen · Administrativ · Klinisch.</h3>
-          <p class="catalog-italic">Eine Maske über alle Heime, alle Behandler, alle Fristen.</p>
-          <p class="catalog-body">Verstöße rot, offene HKPs amber, abrechenbar grün. Der Praxis-Manager liest Risiken auf einer Etage ab — kein Excel-Spagat, keine Telefonkette. CSV-Export für WiPrü-Vorbereitung.</p>
-          <div class="catalog-detail-row">Heim-Übersicht · Ampel · CSV-Export · WiPrü-bereit</div>
-        </article>
-      </div>
-
-      <div class="section-sig">
-        <span>§ II · Werkstatt · Aranthir · Edition 2026</span>
-        <span class="right">Sechs Module · ein Datenstand</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       § III · KOMPENDIUM
-  ============================================================ -->
-  <section id="kompendium" class="chapter">
-    <div class="container">
-      <div class="chapter-head">
-        <div class="chapter-mark">§ III</div>
-        <div class="chapter-label">Kompendium</div>
-        <h2 class="chapter-title">Vorschrift ist nicht das Ende der Liste — <span class="italic">sie ist der Bauplan.</span></h2>
-      </div>
-      <p class="chapter-lede">Aranthir ist <em>für</em> regulierte Heim-Zahnmedizin gebaut, nicht <em>an</em> sie angepasst. Sechs Vorschriften sind die Leit­planken — nicht Anhang am Ende der Spezifikation, sondern Anfang.</p>
-
-      <div class="kompendium">
-        <div class="kompendium-row">
-          <div class="kompendium-id">SGB V · § 174a</div>
-          <div class="kompendium-name">Aufsuchende Versorgung in Pflege­einrichtungen.</div>
-          <div class="kompendium-detail">Vordrucke und Abrechnung integriert. Diagnose, OPS-Code, BEMA-Position, Einwilligung — autostrukturiert aus dem Diktat. <em>Die §174a wird nicht Aufgabe nach der Behandlung, sondern Ergebnis aus der Behandlung.</em></div>
-        </div>
-        <div class="kompendium-row">
-          <div class="kompendium-id">BEMA · § 22a</div>
-          <div class="kompendium-name">PA mit acht Schritten und einem Gate.</div>
-          <div class="kompendium-detail">Sondierungs­tiefen-Vollständigkeit ist Voraussetzung für ATG-Freigabe — nicht freundliche Empfehlung, sondern Workflow-Gate. Störfaktoren-Checkliste, AIT pro Quadrant, BEVa-Vergleich, UPT-Recall.</div>
-        </div>
-        <div class="kompendium-row">
-          <div class="kompendium-id">GoBD</div>
-          <div class="kompendium-name">Tamper-evident Aufzeichnung.</div>
-          <div class="kompendium-detail">Eintrag wird nach Signatur gesiegelt. Nachträgliche Änderungen erzeugen einen versionierten Eintrag, der alte Stand bleibt sichtbar. <em>Eine Akte ohne Geschichte ist keine Akte.</em></div>
-        </div>
-        <div class="kompendium-row">
-          <div class="kompendium-id">DSGVO · Art. 9</div>
-          <div class="kompendium-name">Schweizer Datenresidenz für besondere Kategorien.</div>
-          <div class="kompendium-detail">Verschlüsselung at-rest (AES-256, AWS S3 eu-central-1). In-transit (TLS 1.2+). Datenbank in Frankfurt (Neon Postgres). Diktat-Audio wird nach Transkription verworfen. AVVs mit allen Auftrags­verarbeitern.</div>
-        </div>
-        <div class="kompendium-row">
-          <div class="kompendium-id">Patientenrechtegesetz</div>
-          <div class="kompendium-name">Datenzugang, Löschung, Portabilität.</div>
-          <div class="kompendium-detail">FHIR R4-Schema von Tag eins. Patienten­anfragen über auditierbaren Zugriffs-Workflow. Export­fähig nach ePA und CGM myTI in Vorbereitung.</div>
-        </div>
-        <div class="kompendium-row">
-          <div class="kompendium-id">SOC-2 · Type II</div>
-          <div class="kompendium-name">Mandanten­trennung und Zugriffs­kontrolle.</div>
-          <div class="kompendium-detail">Rollen­basierte Guards. <code>tenantPrisma</code>-Isolation auf API-Ebene. Audit-Plugin auf allen mutierenden Routen. Type-II-Zertifizierung in Vorbereitung; bis dahin: die Architektur ist Type-II-konform geschrieben, nicht hinterher angepasst.</div>
-        </div>
-      </div>
-
-      <div class="section-sig">
-        <span>§ III · Kompendium · Aranthir · Edition 2026</span>
-        <span class="right">Sechs Vorschriften · ein Bauplan</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       § IV · TRÄGER
-  ============================================================ -->
-  <section id="traeger" class="chapter">
-    <div class="container">
-      <div class="chapter-head">
-        <div class="chapter-mark">§ IV</div>
-        <div class="chapter-label">Träger</div>
-        <h2 class="chapter-title">Geschrieben von einem Zahnarzt, <span class="italic">der die §174a selbst kennt.</span></h2>
-      </div>
-
-      <p class="traeger-prose">Aranthir ist nicht das Produkt eines Tech-Teams, das Zahnmedizin als Markt­segment entdeckt hat. Aranthir ist das nächste Kapitel der Arbeit, die wir 2024 in Berlin als <strong>Health Ledger</strong> begonnen haben. Der gleiche Anspruch, ein neuer Name: klinische Dokumentation auf dem Niveau eines Schweizer Bank­archivs, gebaut für die Realität der aufsuchenden Heim-Zahnmedizin in Deutschland — von Menschen, die diese Realität jeden Heim-Tag selbst erleben.</p>
-
-      <div class="traeger-grid">
-        <article class="traeger-card">
-          <div class="traeger-portrait">
-            <div class="placeholder">JG</div>
-            <div class="caption">Portrait · B&amp;W editorial · zu liefern</div>
+    <!-- ── Phone mockup with 10s scene cycle ── -->
+    <div class="phone-wrap" aria-hidden="true">
+      <div class="phone-glow"></div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-stripe"></div>
+          <div class="phone-notch"></div>
+          <div class="phone-status">
+            <span>9:41</span>
+            <span class="right"><span>•••</span><span>5G</span><span>▮</span></span>
           </div>
-          <div class="traeger-role">Gründung · CEO</div>
-          <h3 class="traeger-name">Jesús Gómez Rossi</h3>
-          <p class="traeger-loc">Klinischer Zahnarzt, Health-Ökonom, Innovator. Berlin.</p>
-          <p class="traeger-bio">Treibt Produkt­spezifikation, klinische Architektur und Compliance-Gestaltung. Hat die §174a selbst zu oft geschrieben, um zu glauben, dass sie <em>einfach so</em> leichter wird.</p>
-          <a href="https://jesusgomezrossi.com" class="traeger-link" target="_blank" rel="noopener">jesusgomezrossi.com →</a>
-        </article>
-
-        <article class="traeger-card">
-          <div class="traeger-portrait">
-            <div class="placeholder">CW</div>
-            <div class="caption">Portrait · zu liefern</div>
+          <div class="phone-live">Live Demo</div>
+          <div class="phone-scrub">
+            <div class="meta">
+              <div class="l">
+                <span>i. Dashboard</span>
+                <span>ii. Heute</span>
+                <span>iii. Tagesprotokoll</span>
+              </div>
+              <div class="idx">01 · 02 · 03</div>
+            </div>
+            <div class="track"><span></span><span></span><span></span></div>
           </div>
-          <div class="traeger-role">Operations · KI-Promptdesign</div>
-          <h3 class="traeger-name">Corinna Weigert</h3>
-          <p class="traeger-loc">Praxis-Workflow, Verwaltung, Vordruck-Templates. Berlin.</p>
-          <p class="traeger-bio">Verbindung zwischen klinischer Realität und Produkt­logik. Entwickelt Vordruck-Templates und Audit-Workflows in enger Zusammenarbeit mit den Pilot­praxen.</p>
-        </article>
 
-        <article class="traeger-card">
-          <div class="traeger-portrait" style="background: var(--abyss);">
-            <svg viewBox="0 0 240 240" style="position:absolute; inset:20%;" aria-hidden="true">
-              <circle cx="120" cy="120" r="92" fill="none" stroke="rgba(244,239,230,0.2)" stroke-width="0.5"/>
-              <text x="120" y="148" text-anchor="middle" font-family="Instrument Serif, serif" font-size="84" fill="rgba(244,239,230,0.4)">SMA</text>
-            </svg>
-            <div class="caption" style="color: rgba(244,239,230,0.5);">Hersteller · SwissMedAI</div>
-          </div>
-          <div class="traeger-role">Hersteller</div>
-          <h3 class="traeger-name">SwissMedAI GmbH</h3>
-          <p class="traeger-loc">Berlin · Zürich.</p>
-          <p class="traeger-bio">Schweizer Plattform für regulierte medizinische KI. Daten­residenz Schweiz und EU. Aranthir ist das erste Produkt — weitere klinische Module folgen.</p>
-          <a href="https://swissmed.ai" class="traeger-link" target="_blank" rel="noopener">swissmed.ai →</a>
-        </article>
-      </div>
-
-      <div class="pilot-footnote">
-        Pilotbetrieb · 2026 · Praxis Dr. Feld · Berlin · und Praxis Dr. Hess · München · Internal Testing über Google Play
-      </div>
-
-      <div class="section-sig">
-        <span>§ IV · Träger · Aranthir · Edition 2026</span>
-        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       § V · BEDENKEN (FAQ — glass material)
-  ============================================================ -->
-  <section id="bedenken" class="chapter">
-    <div class="container">
-      <div class="chapter-head">
-        <div class="chapter-mark">§ V</div>
-        <div class="chapter-label">Bedenken</div>
-        <h2 class="chapter-title">Sieben Fragen, <span class="italic">die wir vorher klären.</span></h2>
-      </div>
-      <p class="chapter-lede">Bevor das Telefonat beginnt, beantworten wir die Fragen, die wir am häufigsten in den ersten zehn Minuten hören. <em>Wenn Ihre Frage nicht dabei ist, schreiben Sie uns.</em></p>
-
-      <div class="faq">
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">01 · Verantwortung</span>
-            <span class="faq-question"><span class="faq-id-mobile">01 · VERANTWORTUNG</span>"KI macht Fehler — meine Verantwortung als Zahnarzt bleibt."</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              Genau deshalb durchläuft <strong>jeder Eintrag eine Behandler-Review-und-Sign-Stufe vor dem Siegeln.</strong> Die KI schlägt vor, Sie entscheiden. Das Audit-Log dokumentiert beide Versionen — was die KI vorgeschlagen hat <em>und</em> was Sie signiert haben. Nichts wird in Ihrem Namen abgesendet, was Sie nicht gelesen haben. Sie haben die Kontrolle, das Audit beweist es.
+          <!-- Scene 1 — Dashboard -->
+          <div class="scene scene-1">
+            <div class="s1-head">
+              <div class="s1-title">Dashboard</div>
+              <div class="s1-sub">Management Übersicht</div>
+              <div class="s1-burger"><span></span><span></span><span></span></div>
+            </div>
+            <div class="s1-tabs">
+              <span class="s1-tab on">Übersicht<i></i></span>
+              <span class="s1-tab">Behandler</span>
+              <span class="s1-tab">Heime</span>
+              <span class="s1-tab">Planung</span>
+            </div>
+            <div class="s1-stats">
+              <div class="s1-stat">
+                <div class="s1-stat-num">1184</div>
+                <div class="s1-stat-pill">↑ 0</div>
+                <div class="s1-stat-lbl"><i></i>Patienten</div>
+              </div>
+              <div class="s1-stat">
+                <div class="s1-stat-num">4</div>
+                <div class="s1-stat-pill">↑ 0</div>
+                <div class="s1-stat-lbl"><i></i>Aktive ZE</div>
+              </div>
+              <div class="s1-stat">
+                <div class="s1-stat-num">4</div>
+                <div class="s1-stat-pill">↑ 0</div>
+                <div class="s1-stat-lbl"><i></i>Aktive PA</div>
+              </div>
+              <div class="s1-stat">
+                <div class="s1-stat-num">0</div>
+                <div class="s1-stat-pill">↑ 0</div>
+                <div class="s1-stat-lbl"><i></i>Labor offen</div>
+              </div>
+            </div>
+            <div class="s1-chart">
+              <div class="s1-chart-title">Besuche pro Woche</div>
+              <div class="s1-bars">
+                <div class="s1-bar"><span class="lbl">12</span><span class="bg"><i style="height:80%"></i></span><span class="d">Mo</span></div>
+                <div class="s1-bar"><span class="lbl">8</span><span class="bg"><i style="height:53%"></i></span><span class="d">Di</span></div>
+                <div class="s1-bar"><span class="lbl">15</span><span class="bg"><i style="height:100%"></i></span><span class="d">Mi</span></div>
+                <div class="s1-bar"><span class="lbl">6</span><span class="bg"><i style="height:40%"></i></span><span class="d">Do</span></div>
+                <div class="s1-bar"><span class="lbl">10</span><span class="bg"><i style="height:67%"></i></span><span class="d">Fr</span></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">02 · Datenschutz</span>
-            <span class="faq-question"><span class="faq-id-mobile">02 · DATENSCHUTZ</span>"DSGVO-Risiko mit Patienten-Audio?"</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              Das Audio bleibt am Gerät, bis Sie freigeben. Nach Transkription wird es verworfen — <strong>kein Patienten-Audio im Cloud-Speicher, kein Audio im KI-Training.</strong> Daten liegen in Frankfurt (Neon Postgres + AWS S3 eu-central-1), AES-256 at-rest, TLS 1.2+ in-transit. Mit allen Auftrags­verarbeitern liegen AVVs vor. Patienten­anfragen über das Patientenrechtegesetz sind über ein FHIR R4-Schema von Tag eins technisch möglich.
+          <!-- Scene 2 — Heute -->
+          <div class="scene scene-2">
+            <div class="s2-date">Mittwoch, 29. April 2026</div>
+            <div class="s2-burger"><span></span><span></span><span></span></div>
+            <div class="s2-tabs">
+              <span class="s2-tab on">Heute<i></i></span>
+              <span class="s2-tab">Nächste Woche</span>
             </div>
+            <div class="s2-pills">
+              <div class="s2-pill on"><i></i>Offen<span class="b">0</span></div>
+              <div class="s2-pill"><i class="g"></i>Erledigt<span class="b g">0</span></div>
+            </div>
+            <div class="s2-empty">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#9b958a" stroke-width="1.4"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4v2h6V4"/></svg>
+              <div>Keine offenen Aufgaben</div>
+            </div>
+            <div class="s2-section">Heime</div>
+            <div class="s2-list">
+              <div class="s2-row">Alboinplatz<span>›</span></div>
+              <div class="s2-row">Alexa Lichtenrade<span>›</span></div>
+              <div class="s2-row">Alloheim Schieritzstr<span>›</span></div>
+            </div>
+            <div class="s2-fab">✨</div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">03 · Vendor-Lock-in</span>
-            <span class="faq-question"><span class="faq-id-mobile">03 · VENDOR-LOCK-IN</span>"Was, wenn ich Aranthir verlasse — bleibt meine Akte verfügbar?"</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <strong>Ihre Akte gehört Ihrer Praxis, nicht uns.</strong> PDF-Export gesiegelter §174a-Einträge ist Standard­funktion — kein Premium-Tier, kein Export-Bezahlpfad. FHIR R4-Export für ePA und CGM myTI ist in Vorbereitung. Aranthir ist gegen Lock-in architektiert: wenn Sie gehen, gehen die Daten mit. <em>Wir möchten, dass Sie bleiben, weil das Werkzeug für Sie funktioniert — nicht, weil der Ausgang versperrt ist.</em>
+          <!-- Scene 3 — Tagesprotokoll -->
+          <div class="scene scene-3">
+            <div class="s3-head">
+              <span class="s3-back">‹</span>
+              <div>
+                <div class="s3-title">Tagesprotokoll</div>
+                <div class="s3-sub">Mittwoch, 29. April 2026</div>
+              </div>
             </div>
+            <div class="s3-toggle">
+              <span class="on">Tag</span><span>Woche</span>
+            </div>
+            <div class="s3-step">
+              <span class="b">‹</span><span class="d">2026-04-29</span><span class="b">›</span>
+            </div>
+            <div class="s3-stats">
+              <div><div class="n">2</div><div class="l">Einträge</div></div>
+              <div><div class="n">1</div><div class="l">Behandler</div></div>
+            </div>
+            <div class="s3-card">
+              <div class="s3-doc">Dr. Gomez<span>2</span></div>
+              <div class="s3-entry">
+                <span class="t">08:49</span>
+                <div><div class="p">Krebs, Rudi</div><div class="m">Helmut Böttcher</div></div>
+              </div>
+              <div class="s3-entry">
+                <span class="t">09:04</span>
+                <div><div class="p">Trimpe, Renate</div><div class="m">Helmut Böttcher · Zi. 2</div></div>
+              </div>
+            </div>
+            <div class="s3-btn">↓ PDF exportieren</div>
           </div>
-        </div>
 
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">04 · Co-Existenz</span>
-            <span class="faq-question"><span class="faq-id-mobile">04 · CO-EXISTENZ</span>"Wir benutzen DAMPSOFT/CHARLY — wir brauchen kein zweites System."</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              Aranthir ersetzt DAMPSOFT, CHARLY oder Z1 nicht für die in-Praxis-Behandlung — diese Werkzeuge bleiben Ihre Praxis-EHR. Aranthir ist <strong>das spezialisierte Werkzeug für die Heim-Tour</strong>, dort, wo die in-Praxis-Software nicht hingeht. Die gesiegelten §174a-Einträge werden als PDF an die Krankenkasse exportiert — genauso wie aus Ihrer Praxis-Software, nur ohne den Weg über Ihren Abend-Schreibtisch. <em>Co-Existenz, nicht Konkurrenz.</em>
-            </div>
-          </div>
         </div>
-
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">05 · Adoption</span>
-            <span class="faq-question"><span class="faq-id-mobile">05 · ADOPTION</span>"Mein Behandler wird das nicht annehmen — eine neue App ist eine Bürde."</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <strong>Die größere Bürde ist die §174a am Abend.</strong> Aranthir verschiebt die Anstrengung — von der Akten­arbeit nach Hause hin zu fünf Minuten Onboarding einmalig. Im Pilot mit Dr. Feld (Berlin) und Dr. Hess (München) berichten die Behandler von ungefähr ⟨30 Minuten Ersparnis pro Heim-Tag — Pilotzahlen, vor Veröffentlichung zu verifizieren⟩. Wir bieten Heim-Tour-Begleit­schutz für die ersten zwei Wochen.
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">06 · Stabilität</span>
-            <span class="faq-question"><span class="faq-id-mobile">06 · STABILITÄT</span>"Pilotbetrieb klingt nach Beta — wir brauchen etwas Stabiles."</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              "Pilotbetrieb" bedeutet, dass wir den Funktionsumfang noch erweitern und auf Praxis-Feedback reagieren. Es bedeutet <strong>nicht</strong>, dass die Compliance-Architektur instabil ist — diese ist von Tag eins production-grade. GoBD-Tamper-Evidence, DSGVO-konforme Verschlüsselung, Audit-Log über alle mutierenden Routen. SOC-2 Type II in Vorbereitung. <em>Die "Beta"-Markierung ist Bescheidenheit — keine Instabilität.</em>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-trigger" aria-expanded="false">
-            <span class="faq-id-desktop">07 · Preis</span>
-            <span class="faq-question"><span class="faq-id-mobile">07 · PREIS</span>"Was kostet das?"</span>
-            <span class="faq-toggle">+</span>
-          </button>
-          <div class="faq-answer">
-            <div class="faq-answer-inner">
-              <strong>Aranthir hat keine öffentliche Preisliste — bewusst.</strong> Pricing wird im 30-minütigen Demo-Gespräch mit dem Gründer festgelegt, weil das Praxis-Profil zu unterschiedlich ist, um eine Stange-Sticker fair zu vergeben. Sie zahlen für <em>Ihre</em> Praxis-Realität, nicht für eine durchschnittliche. Wenn nach dem Gespräch klar ist, dass Aranthir nicht der richtige Hebel für Ihre Praxis ist, sagen wir das.
-            </div>
-          </div>
-        </div>
+        <div class="phone-home"></div>
       </div>
 
-      <div class="section-sig">
-        <span>§ V · Bedenken · Aranthir · Edition 2026</span>
-        <span class="right">Sieben Fragen · sieben Antworten</span>
+      <div class="phone-caption">
+        <div class="meta"><span>Live Demo · 15 Sek.</span><span class="num">№ 01 / 03</span></div>
+        <div class="body">
+          <article>
+            <h4>Management-Übersicht.</h4>
+            <p>Patienten, aktive ZE/PA, offene Labore — auf einer Kachel, in Echtzeit.</p>
+          </article>
+          <article>
+            <h4>Heute. Nächste Woche.</h4>
+            <p>Aufgaben pro Heim. Nichts geht verloren — auch nicht zwischen zwei Schichten.</p>
+          </article>
+          <article>
+            <h4>Tagesprotokoll &amp; PDF.</h4>
+            <p>Pro Behandler, pro Tag. Ein Knopf für Heimleitung, ein Knopf für die Abrechnung.</p>
+          </article>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============================================================
-       § VI · EINTRETEN — Ink material (the seal moment)
-  ============================================================ -->
-  <section id="eintreten" class="eintreten">
-    <div class="container">
-      <div class="eintreten-frame">
-        <div class="eintreten-stamp">§ VI · Eintreten</div>
-        <h2 class="eintreten-h1">Aranthir <span class="italic">testen.</span></h2>
-        <p class="eintreten-italic">Demo-Termine vereinbaren wir persönlich, meist innerhalb einer Woche. Pilot­zugang ist begrenzt auf zahn­ärztliche Heim­versorger in Deutschland.</p>
-        <p class="eintreten-body">Es gibt keinen Self-Service-Signup. Es gibt keine öffentliche Preisliste. Es gibt ein Telefongespräch — <strong>dreißig Minuten</strong> — mit dem Gründer, der selbst Heim­besuche fährt. <em>Aranthir ist nicht für jede Praxis das richtige Werkzeug.</em></p>
-        <div class="eintreten-cta">
-          <a href="mailto:hello@aranthir.com" class="btn btn-on-ink-primary">Demo anfragen.</a>
-          <a href="https://app.aranthir.com" class="btn btn-on-ink-ghost">Bestehender Nutzer · anmelden.</a>
+<!-- ═══ I — Mitgeschrieben, nicht nachgeschrieben ═══ -->
+<section class="chapter" id="produkt">
+  <div class="chapter-marker">№ 01 — Produkt</div>
+  <div class="chapter-marker-r">01 / 05</div>
+  <div class="wrap">
+    <div class="chapter-head reveal">
+      <div class="chapter-num">i.</div>
+      <h2 class="chapter-title">
+        Die Behandlung wird mitgeschrieben — <span class="it">nicht nachgeschrieben.</span>
+      </h2>
+      <div class="chapter-meta">Methode<span class="v">Diktat → Akte</span></div>
+    </div>
+
+    <div class="triptych reveal-stagger">
+      <article class="col">
+        <div class="col-num"><em>i.</em>Erfassung</div>
+        <h3>Während der Behandlung. Mit Handschuhen. Ohne Schreibtisch.</h3>
+        <p>
+          Aranthir hört zu, sortiert die Begriffe und legt den Eintrag direkt in die
+          Bewohnerakte. Wer am Stuhl steht, dokumentiert nicht abends auf dem Stationsflur.
+        </p>
+        <div class="tags"><span>Diktat</span><span>Echtzeit</span><span>Hands-free</span></div>
+      </article>
+
+      <article class="col">
+        <div class="col-num"><em>ii.</em>Strukturierung</div>
+        <h3>Die KI füllt den passenden deutschen Vordruck.</h3>
+        <p>
+          Kein freies Textfeld, kein „Sonstiges". Aranthir kennt §132a, §174a, MDK-Berichte,
+          Heil- und Kostenpläne — und trägt jedes Datum in die Spalte, in die es gehört.
+        </p>
+        <div class="tags"><span>BMV-Z</span><span>SGB XI</span><span>§174a</span></div>
+      </article>
+
+      <article class="col">
+        <div class="col-num"><em>iii.</em>Freigabe</div>
+        <h3>Sie unter­schreiben, freigeben, fertig.</h3>
+        <p>
+          Der Eintrag bleibt revisionssicher abgelegt. Betreuer, Heimleitung und Abrechnung
+          sehen genau den Ausschnitt, den sie sehen dürfen — nicht mehr, nicht weniger.
+        </p>
+        <div class="tags"><span>Audit-Log</span><span>RBAC</span><span>BSI C5</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ II — Vordrucke ═══ -->
+<section class="chapter" id="vordrucke">
+  <div class="chapter-marker">№ 02 — Vordrucke</div>
+  <div class="chapter-marker-r">02 / 05</div>
+  <div class="wrap">
+    <div class="chapter-head reveal">
+      <div class="chapter-num">ii.</div>
+      <h2 class="chapter-title">
+        Jeder deutsche Vordruck ist <span class="it">bereits vorinstalliert.</span>
+      </h2>
+      <div class="chapter-meta">Aktiv<span class="v">42 Formulare</span></div>
+    </div>
+
+    <div class="vordrucke reveal-stagger">
+      <article class="vordruck">
+        <div>
+          <div class="code">§ 174a · SGB XI</div>
+          <h4>Heimvertrag &amp; Bewohnerakte</h4>
+          <p>Erstaufnahme, Pflegegrad-Veränderung, Verlegung, Sterbefall — alle Pflichtfelder, vorbelegt aus den Stammdaten.</p>
         </div>
-        <div class="eintreten-whisper">hello@aranthir.com · Antwort werktags innerhalb 24 Stunden.</div>
+        <div class="meta"><span>14 Formulare</span><span class="arrow">→</span></div>
+      </article>
+
+      <article class="vordruck">
+        <div>
+          <div class="code">BMV-Z · Anlage 14a</div>
+          <h4>Heil- und Kostenplan</h4>
+          <p>HKP für Zahnersatz inkl. KZBV-Befundklasse, Festzuschuss-Berechnung und Härtefallregelung — direkt aus dem Diktat.</p>
+        </div>
+        <div class="meta"><span>2025-Q2 aktuell</span><span class="arrow">→</span></div>
+      </article>
+
+      <article class="vordruck">
+        <div>
+          <div class="code">MDK / MD</div>
+          <h4>Pflegegutachten-Bogen</h4>
+          <p>Module 1–6 strukturiert. Aranthir markiert Lücken, bevor der Gutachter kommt — keine Nachforderungen mehr.</p>
+        </div>
+        <div class="meta"><span>6 Module</span><span class="arrow">→</span></div>
+      </article>
+
+      <article class="vordruck">
+        <div>
+          <div class="code">§ 132a SGB V</div>
+          <h4>Häusliche Krankenpflege</h4>
+          <p>Verordnung, Folgeverordnung, Ablehnung. Felder kommen aus der Visite, Unterschrift kommt vom Hausarzt per Mail-Link.</p>
+        </div>
+        <div class="meta"><span>3 Vordrucke</span><span class="arrow">→</span></div>
+      </article>
+
+      <article class="vordruck">
+        <div>
+          <div class="code">§ 1820 BGB</div>
+          <h4>Betreuer-Einwilligung</h4>
+          <p>Freiheitsentziehende Maßnahmen, ärztliche Eingriffe, Heimwechsel — sauber dokumentiert für Betreuungsgericht.</p>
+        </div>
+        <div class="meta"><span>9 Anlässe</span><span class="arrow">→</span></div>
+      </article>
+
+      <article class="vordruck">
+        <div>
+          <div class="code">DSGVO Art. 9</div>
+          <h4>Schweigepflicht­entbindung</h4>
+          <p>Pro Empfänger, pro Datenkategorie, mit Widerrufsdatum. Wird automatisch ungültig — nicht erst bei der Prüfung.</p>
+        </div>
+        <div class="meta"><span>Granular</span><span class="arrow">→</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ III — Bauplan ═══ -->
+<section class="chapter" id="bauplan">
+  <div class="chapter-marker">№ 03 — Bauplan</div>
+  <div class="chapter-marker-r">03 / 05</div>
+  <div class="wrap">
+    <div class="chapter-head reveal">
+      <div class="chapter-num">iii.</div>
+      <h2 class="chapter-title">
+        Vorschrift ist nicht das Ende der Liste — <span class="it">sie ist der Bauplan.</span>
+      </h2>
+      <div class="chapter-meta">Phasen<span class="v">06 Stationen</span></div>
+    </div>
+
+    <div class="bauplan reveal">
+      <div class="bauplan-head">
+        <div>№</div><div>Phase</div><div>Station</div><div>Beschreibung</div>
       </div>
 
-      <div class="section-sig on-ink container" style="max-width: 720px; margin-left: auto; margin-right: auto;">
-        <span>§ VI · Eintreten · Aranthir · Edition 2026</span>
-        <span class="right">SwissMedAI GmbH · Berlin · Zürich</span>
+      <div class="row">
+        <div class="rn">01</div>
+        <div class="rk">Aufnahme</div>
+        <h5>Aufnahmegespräch &amp; Pflegeplanung</h5>
+        <p>
+          <span class="check">✓</span>Biographie, Medikation, Patientenverfügung — alles in einem Gespräch
+          erfasst. Aranthir erkennt, welche Felder für §174a, MDK und Hausarzt jeweils gebraucht werden,
+          und legt drei saubere Versionen ab.
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="rn">02</div>
+        <div class="rk">Visite</div>
+        <h5>Hausarzt- und Zahnarztbesuch</h5>
+        <p>
+          <span class="check">✓</span>Diktat während der Untersuchung, Befund landet im richtigen Modul.
+          KZBV-konforme HKP-Vorschau noch im Zimmer, mit Festzuschuss und Härtefall-Hinweis.
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="rn">03</div>
+        <div class="rk">Pflege</div>
+        <h5>Tägliche Pflegedoku­men­tation</h5>
+        <p>
+          <span class="check">✓</span>Trinkprotokoll, Lagerung, Sturzereignis. Aranthir verbindet Eintrag
+          und Bewohnerakte automatisch — keine doppelten Tabellen, keine Excel-Listen mehr.
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="rn">04</div>
+        <div class="rk">Einwilligung</div>
+        <h5>Betreuer- und Schweige­pflicht­entbindungen</h5>
+        <p>
+          <span class="check">✓</span>Generierung, Versand, Rückläufer-Tracking. Pro Empfänger und pro
+          Datenkategorie — mit Verfallsdatum, das Aranthir selbst überwacht.
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="rn">05</div>
+        <div class="rk">Abrechnung</div>
+        <h5>Quartalsweise Übergabe an die KZV</h5>
+        <p>
+          <span class="check">✓</span>BEMA, GOZ, Zuschlagsdokumentation. Maschinenlesbares xml-Paket für
+          die KZV, prüfbar im Browser, mit Spur zurück zum Diktat.
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="rn">06</div>
+        <div class="rk">Audit</div>
+        <h5>Heimaufsicht und MDK-Prüfung</h5>
+        <p>
+          <span class="check">✓</span>Ein Knopf, ein Prüfraum, eine Akte. Prüfer sehen, was sie sehen
+          dürfen — Bewohnerintimes bleibt unter Verschluss. Hash-Kette belegt, dass nichts
+          nachträglich verschoben wurde.
+        </p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
-  <footer>
-    <div class="container">
-      <p class="footer-strap">Die Akte, <span class="italic">die sich selbst führt.</span></p>
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h4>Produkt</h4>
-          <ul>
-            <li><a href="#methode">Methode</a></li>
-            <li><a href="#werkstatt">Werkstatt</a></li>
-            <li><a href="#kompendium">Kompendium</a></li>
-            <li><a href="#bedenken">Bedenken</a></li>
-            <li><a href="https://app.aranthir.com">Anmelden →</a></li>
-          </ul>
+<!-- ═══ IV — Autoren ═══ -->
+<section class="chapter" id="autoren">
+  <div class="chapter-marker">№ 04 — Autoren</div>
+  <div class="chapter-marker-r">04 / 05</div>
+  <div class="wrap">
+    <div class="chapter-head reveal">
+      <div class="chapter-num">iv.</div>
+      <h2 class="chapter-title">
+        Geschrieben von einem Zahnarzt, <span class="it">der den §174a selbst kennt.</span>
+      </h2>
+      <div class="chapter-meta">Team<span class="v">Klein, gemischt</span></div>
+    </div>
+
+    <div class="authors reveal-stagger">
+      <article class="author">
+        <div class="portrait" data-tag="№ 01 · Klinischer Zahnarzt">JG</div>
+        <div class="author-body">
+          <h6>Jesús Gómez Rossi</h6>
+          <div class="role">Klinischer Zahnarzt · Health-Ökonom · Gründer</div>
+          <p>Berlin. Hat den §174a selbst zu oft geschrieben, um zu glauben, dass er <em class="it">einfach so</em> leichter wird. Treibt Produkt­spezifikation, klinische Architektur und Compliance-Gestaltung von Aranthir.</p>
+          <div class="credit"><span>Berlin · jesusgomezrossi.com</span><span class="arrow">→</span></div>
         </div>
-        <div class="footer-col">
-          <h4>Hersteller</h4>
-          <ul>
-            <li><a href="https://swissmed.ai">SwissMedAI GmbH</a></li>
-            <li><a href="https://jesusgomezrossi.com">Gründer</a></li>
-            <li><a href="mailto:hello@aranthir.com">Kontakt</a></li>
-            <li><a href="#eintreten">Pilot-Bewerbung</a></li>
-          </ul>
+      </article>
+
+      <article class="author dark">
+        <div class="portrait" data-tag="№ 02 · Operations">CW</div>
+        <div class="author-body">
+          <h6>Corinna Weigert</h6>
+          <div class="role">Operations · KI-Promptdesign</div>
+          <p>Berlin. Verbindung zwischen klinischer Realität und Produkt­logik. Entwickelt Vordruck-Templates und Audit-Workflows in enger Zusammenarbeit mit den Pilot­praxen — die Sprache, die Aranthir spricht, ist die, die in der Praxis gesprochen wird.</p>
+          <div class="credit"><span>Berlin · Promptdesign</span><span class="arrow">→</span></div>
         </div>
-        <div class="footer-col">
-          <h4>Rechtliches</h4>
-          <ul>
-            <li><a href="#">Impressum</a></li>
-            <li><a href="#">Datenschutz · DSGVO</a></li>
-            <li><a href="#">AVV-Vorlagen</a></li>
-            <li><a href="#">HWG-Hinweise</a></li>
-          </ul>
+      </article>
+
+      <article class="author invert">
+        <div class="portrait" data-tag="№ 03 · Hersteller">SMA</div>
+        <div class="author-body">
+          <h6>SwissMedAI GmbH</h6>
+          <div class="role">Hersteller · Berlin · Zürich</div>
+          <p>Schweizer Plattform für regulierte medizinische KI. Daten­residenz Schweiz und EU, Hosting in Frankfurt (eu-central-1). Aranthir ist das erste Produkt — weitere klinische Module folgen.</p>
+          <div class="credit"><span>DSGVO · §75c SGB V · ISO 27001</span><span class="arrow">→</span></div>
         </div>
-        <div class="footer-col">
-          <h4>Sprache</h4>
-          <ul>
-            <li><a href="#" style="color: var(--abyss); border-bottom: 1px solid var(--abyss); padding-bottom: 1px;">Deutsch (DE)</a></li>
-            <li><a href="/en/">English (EN)</a></li>
-          </ul>
-        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ V — Sieben Fragen ═══ -->
+<section class="chapter" id="fragen">
+  <div class="chapter-marker">№ 05 — Fragen</div>
+  <div class="chapter-marker-r">05 / 05</div>
+  <div class="wrap">
+    <div class="chapter-head reveal">
+      <div class="chapter-num">v.</div>
+      <h2 class="chapter-title">
+        Sieben Fragen, <span class="it">die wir vorher klären.</span>
+      </h2>
+      <div class="chapter-meta">Vorgespräch<span class="v">7 Punkte</span></div>
+    </div>
+
+    <div class="faq reveal">
+      <div class="q">
+        <div class="qn">01</div>
+        <div class="qt">Ersetzt Aranthir unser Heimverwaltungs­system?</div>
+        <div class="qa">Nein. Aranthir liegt davor — als Diktat- und Aktenschicht — und schreibt zurück in Vivendi, MD Medicus oder Senso. Wir haben Konnektoren für die drei meistverbreiteten Systeme; weitere bauen wir auf Anfrage.</div>
       </div>
-      <div class="footer-bottom">
-        <span>SwissMedAI GmbH · Berlin · Zürich · Edition 2026 · v 0.1.0</span>
-        <span>Hergestellt in der Schweiz · Geschrieben für Deutschland</span>
+
+      <div class="q">
+        <div class="qn">02</div>
+        <div class="qt">Wie laut darf das Stationszimmer sein?</div>
+        <div class="qa">So laut, wie es ist. Aranthir trennt Sprecher, kennt die Stimmen Ihres Teams nach drei Tagen Einlernen und überschreibt nichts ohne Bestätigung — auch dann nicht, wenn jemand mitspricht.</div>
+      </div>
+
+      <div class="q">
+        <div class="qn">03</div>
+        <div class="qt">Was passiert bei einem Stromausfall?</div>
+        <div class="qa">Diktate werden lokal gepuffert und synchronisieren, sobald das Netz zurückkommt. Die Akte selbst liegt im Rechenzentrum — kein Heim verliert Einträge, weil das WLAN abends instabil ist.</div>
+      </div>
+
+      <div class="q">
+        <div class="qn">04</div>
+        <div class="qt">Wer haftet, wenn die KI einen Fehler einträgt?</div>
+        <div class="qa">Niemand fragt eine Maschine — wir freigeben jeden Eintrag durch Unterschrift. Aranthir ist Werkzeug, nicht Aussteller. Wir liefern den Audit-Trail, der das im Streitfall belegt.</div>
+      </div>
+
+      <div class="q">
+        <div class="qn">05</div>
+        <div class="qt">Wo liegen die Daten?</div>
+        <div class="qa">Frankfurt am Main, in einem nach BSI C5 testierten Rechenzentrum. Kein Datentransfer außerhalb der EU, keine Trainingsverwertung Ihrer Diktate — vertraglich festgehalten.</div>
+      </div>
+
+      <div class="q">
+        <div class="qn">06</div>
+        <div class="qt">Können Betreuer mitlesen?</div>
+        <div class="qa">Sie sehen genau das, was nach §1820 BGB für sie bestimmt ist — nicht mehr. Jede Freigabe wird einzeln protokolliert; jede Aufhebung wirkt sofort.</div>
+      </div>
+
+      <div class="q">
+        <div class="qn">07</div>
+        <div class="qt">Was kostet es?</div>
+        <div class="qa">Pro Bewohner und Monat, gestaffelt nach Heimgröße. Pilotpreise im ersten Halbjahr, Kündigung jederzeit zum Monatsende. Den Preisplan schicken wir nach dem Vorgespräch — er soll zum Heim passen, nicht umgekehrt.</div>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    /* FAQ accordion — minimal, no flashy animation */
-    document.querySelectorAll('.faq-trigger').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = btn.parentElement;
-        const isOpen = item.classList.contains('open');
-        item.classList.toggle('open');
-        btn.setAttribute('aria-expanded', !isOpen);
-      });
+<!-- ═══ CTA ═══ -->
+<section class="cta" id="testen">
+  <div class="cta-bg" aria-hidden="true"></div>
+  <div class="cta-tag">№ 06 — Pilot</div>
+  <div class="cta-tag-r">Sommer 2026</div>
+  <div class="cta-ghost" aria-hidden="true">testen.</div>
+  <div class="cta-inner reveal">
+    <div class="label">Pilot · drei Wochen · Ihr Tempo</div>
+    <h2>
+      Aranthir <span class="it">testen.</span>
+    </h2>
+    <p>
+      Drei Wochen, Ihre Akten, Ihr Tempo. Wir richten ein, schulen einen Nachmittag,
+      sehen mit. Wenn Sie nach drei Wochen nicht weiterführen wollen, ziehen wir
+      die Daten zurück — und die Sache ist erledigt.
+    </p>
+    <div class="cta-cta">
+      <a href="#" class="btn btn-primary">Pilot anfragen <span class="arrow">→</span></a>
+      <a href="#rueckruf" class="btn btn-ghost">Rückruf bitten</a>
+    </div>
+    <div class="cta-meta">
+      <div><div class="k">Hosting</div><div class="v">Frankfurt</div></div>
+      <div><div class="k">Zertifizierung</div><div class="v">BSI C5</div></div>
+      <div><div class="k">Rechtsrahmen</div><div class="v">§ 75c SGB V</div></div>
+      <div><div class="k">Schutz</div><div class="v">DSGVO Art. 9</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="foot" id="rueckruf">
+  <div class="foot-mark">№ 07 — Kontakt · End of Page</div>
+  <div class="wrap">
+    <div class="foot-head">
+      <div class="foot-num">vi.</div>
+      <h2 class="foot-title">
+        So sieht, <span class="it">die wir nicht hören.</span>
+      </h2>
+    </div>
+
+    <div class="foot-grid">
+      <div class="foot-col">
+        <h6>Aranthir</h6>
+        <a href="#produkt">Produkt</a>
+        <a href="#vordrucke">Vordrucke</a>
+        <a href="#bauplan">Bauplan</a>
+        <a href="#fragen">Fragen &amp; Antworten</a>
+      </div>
+      <div class="foot-col">
+        <h6>Hersteller</h6>
+        <p>SwissMedAI GmbH</p>
+        <p>Berlin · Zürich</p>
+        <p style="margin-top:14px;color:#7a7a72">Anschrift auf Anfrage</p>
+      </div>
+      <div class="foot-col">
+        <h6>Recht</h6>
+        <a href="#">Impressum</a>
+        <a href="#">Datenschutz</a>
+        <a href="#">AGB</a>
+        <a href="#">Auftragsverarbeitung</a>
+      </div>
+      <div class="foot-col">
+        <h6>Kontakt</h6>
+        <a href="mailto:hello@aranthir.com">hello@aranthir.com</a>
+        <a href="tel:+4930000000000">+49 30 — auf Anfrage</a>
+        <p style="margin-top:14px;color:#7a7a72">Mo–Fr · 9–17 Uhr CET</p>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <div>© 2026 Aranthir — ein Projekt der SwissMedAI GmbH</div>
+      <div>Hergestellt in der Schweiz · Geschrieben für Deutschland</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // scroll progress
+  const sp = document.getElementById('sp');
+  function onScroll(){
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    sp.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // clock
+  const clock = document.getElementById('clock');
+  function tick(){
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' CET';
+  }
+  tick(); setInterval(tick, 1000);
+
+  // scroll-trigger reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
     });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
+</script>
 
-    /* Subtle scroll-triggered reveal */
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('in');
-      });
-    }, { threshold: 0.08 });
-    document.querySelectorAll('.chapter, .eintreten').forEach(el => {
-      el.classList.add('reveal');
-      observer.observe(el);
-    });
-  </script>
 </body>
 </html>
